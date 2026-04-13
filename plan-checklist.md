@@ -94,6 +94,7 @@ Tracks progress on the LLM Wiki implementation. See `plan.md` for details on eac
   - [ ] Wiki Conventions has entries from real use
   - [ ] Templates assessed for domain fitness
   - [ ] New page type added if needed
+  - [ ] Reviewed whether diff-before-commit convention is needed
 - [ ] **4.4** Committed to git
 
 ---

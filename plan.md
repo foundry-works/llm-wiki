@@ -92,8 +92,11 @@ mkdir -p templates
 ```markdown
 ---
 type: synthesis
-updated: ""
+sources: []
+created: "YYYY-MM-DD"
+updated: "YYYY-MM-DD"
 status: current
+tags: []
 ---
 
 > [!tldr]
@@ -240,6 +243,8 @@ Same pattern as Phase 2.
 
 **Goal:** Stress-test with more sources. Build real cross-references. Refine the schema.
 
+**Note:** A partially-built wiki can underperform no wiki at all — incomplete cross-references and partial synthesis can mislead rather than help. The wiki's value compounds after a minimum coverage threshold. Treat the wiki as a work-in-progress until cross-references form a meaningful web and synthesis reflects multiple sources. This phase is where the wiki crosses that threshold.
+
 **Depends on:** Phases 2-3
 
 ### 4.1 Ingest 3-5 More Sources
@@ -268,6 +273,7 @@ By this point the "Wiki Conventions" section in CLAUDE.md should have several en
 - Has the agent learned patterns about the domain?
 - Do the templates need adjustment for this domain?
 - Is a new page type needed?
+- Is "prefer targeted updates" sufficient, or should the agent show proposed diffs before committing? (More important as supervision decreases.)
 
 Adjust CLAUDE.md, templates, or conventions as needed. This is the schema co-evolution the original describes.
 

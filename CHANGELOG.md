@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-04-13 — Revision 2
+
+Refinements to `implementation-proposal.md`, `plan.md`, and `plan-checklist.md` based on comparative review against source material. See `revisions/revisions-2.md` for full rationale.
+
+### Changed
+
+- **synthesis.md scaffold frontmatter completed.** Added missing `sources`, `created`, `tags` fields to comply with the spec's "every wiki page" requirement. (`plan.md`)
+- **Claim typing guidance for synthesis.md.** Synthesis is implicitly analytical — `type: synthesis` signals the page is the agent's integrated understanding. Prose is fine without per-claim callout wrappers; `[!source]` used only when referencing a specific source directly. (`implementation-proposal.md`, CLAUDE.md Synthesis section)
+- **Source-summary `sources` field clarified.** Convention added: provenance comes from `raw_path`; `sources` is typically `[]` unless the summary draws on other source-summary pages. (`implementation-proposal.md`, CLAUDE.md Other Conventions)
+- **Index split threshold added.** Rule of thumb: split when the index exceeds ~100 entries. Based on community-reported ~200-page retrieval ceiling. (`implementation-proposal.md`, CLAUDE.md Index Format)
+- **Dual output elevated to universal convention.** Every ingest and query updates the wiki — index, log, and synthesis updates are part of the deliverable, not afterthoughts. (`implementation-proposal.md`, CLAUDE.md Other Conventions)
+- **Ingestion gap acknowledged.** Note added to Phase 4: a partially-built wiki can underperform no wiki at all. The wiki's value compounds after a minimum coverage threshold. (`plan.md`)
+- **Diff-before-commit flagged for Phase 4 review.** Question added to schema review: is "prefer targeted updates" sufficient, or should the agent show proposed diffs? (`plan.md`, `plan-checklist.md`)
+
+### Meta
+
+- **Revisions format established.** `revisions-2.md` contains rationale and diffs only — no full document copies. `revisions-1.md` is a frozen historical snapshot.
+
 ## 2026-04-13 — Revision 1
 
 Major revision to `implementation-proposal.md`, `plan.md`, and `plan-checklist.md`. Added `PHILOSOPHY.md`. See `revisions/revisions-1.md` for full rationale.

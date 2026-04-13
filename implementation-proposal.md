@@ -459,6 +459,7 @@ Not markdown links. The graph depends on this.
 `wiki/index.md`: one wikilink + one-line TLDR per page, organized by
 category (Entities, Concepts, Sources, Comparisons). Keep entries concise.
 When the index becomes unwieldy, split into per-category indexes.
+Rule of thumb: split when the index exceeds ~100 entries.
 
 ### Log Format
 
@@ -473,6 +474,13 @@ Log every ingest, every query that generates a page, every lint pass.
 - One page per entity. Search before creating to avoid duplicates.
 - When sources disagree, surface the disagreement explicitly.
 - Prefer targeted updates over full page rewrites.
+- For source-summary pages, provenance comes from `raw_path`.
+  The `sources` field is typically `[]` unless the summary draws on
+  other source-summary pages (e.g., a review paper referencing
+  earlier sources already in the wiki).
+- Every ingest and query updates the wiki — not just answers the
+  immediate question. Index, log, and synthesis updates are part of
+  the deliverable, not afterthoughts.
 
 ## Guidance (Flexible)
 
@@ -511,6 +519,12 @@ fill the gaps? Report findings. Apply fixes only with human approval.
 everything the wiki knows. Revise it on every ingest. Keep it readable
 and under ~1,000 words. It should reflect the current state of the wiki's
 knowledge, not just the latest source.
+
+Synthesis is analytical by nature — its `type: synthesis` signals that
+all content represents your integrated understanding. Write in prose
+without per-claim callout wrappers. If you reference a specific source
+directly, use a `[!source]` callout for that claim. Otherwise, the page
+is implicitly `[!analysis]`.
 
 ## Wiki Conventions
 
