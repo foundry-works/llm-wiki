@@ -126,6 +126,16 @@ If `template=` doesn't work: document the working alternative (e.g., read templa
 
 Clean up test page.
 
+Also verify the graph commands used by lint:
+
+```bash
+obsidian orphans
+obsidian deadends
+obsidian unresolved
+```
+
+If any don't work: the agent can compute these by reading the file tree and parsing wikilinks directly. Document which commands work and which need the manual fallback. This determines how CLAUDE.md references lint operations.
+
 ### 1.5 Write CLAUDE.md
 
 Create `CLAUDE.md` in the vault root as specified in the proposal. Two sections: Specifications (strict data contracts) and Guidance (flexible principles). Include empty "Wiki Conventions" section.
@@ -318,6 +328,8 @@ Linear, but only 5 phases instead of 9. First real content appears in Phase 2 (s
 | LLM creates duplicate pages instead of updating existing ones | Medium | Medium | CLAUDE.md specifies "search before creating." Review in Phase 2. Add correction if needed. |
 | LLM marks inferences as `[!source]` | Medium | High | CLAUDE.md emphasizes this distinction. Review claim typing in Phase 2. Correct aggressively. |
 | Context compaction drops CLAUDE.md conventions mid-session | Medium | High | Keep CLAUDE.md concise. For long sessions, the agent can re-read it. |
+| Lint graph commands (`obsidian orphans/deadends/unresolved`) don't work as expected | Medium | Medium | Test in Phase 1.4. Fallback: agent reads file tree and parses wikilinks manually. More expensive but no CLI dependency. |
+| LLM writes substantive claims as regular prose (no callout) | High | High | CLAUDE.md claim typing spec emphasizes this. Review in Phase 2. If it happens, add an explicit correction to Wiki Conventions: "Every factual or analytical statement must be inside a typed callout." |
 
 ---
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-04-13 — Revision 3
+
+Data contract completions, risk coverage, and guidance additions based on comparative review of all planning documents against source materials (`llm-wiki.md`, `PHILOSOPHY.md`, `intermediate/`, `synthesis/`). See `revisions/revisions-3.md` for full rationale.
+
+### Added
+
+- **Page naming convention.** Title Case with spaces, matching wikilink text exactly. Disambiguate with parentheticals. Added to Specifications in both the proposal body and the CLAUDE.md content. (`implementation-proposal.md`)
+- **Lint graph command testing.** `obsidian orphans`, `deadends`, `unresolved` now tested in Phase 1.4 alongside template creation. Fallback documented: agent reads file tree and parses wikilinks manually. (`plan.md`, `plan-checklist.md`)
+- **Source granularity guidance.** For long sources, ingest chapter by chapter. Each chunk gets its own source-summary page. Added to Ingest principles and CLAUDE.md Ingest guidance. (`implementation-proposal.md`)
+- **Bare-claims risk.** New risk register entry: LLM writes substantive claims as regular prose outside any callout. Rated High/High. Mitigation: review in Phase 2, add explicit correction to Wiki Conventions if it occurs. (`plan.md`)
+- **Page length guidance.** If a page grows past ~1,500 words, consider splitting it. Same pattern as the ~100-entry index split threshold. (`implementation-proposal.md`, CLAUDE.md Other Conventions)
+
+### Changed
+
+- **Log format: H2 to H3.** Log entries now use `### [YYYY-MM-DD]` instead of `## [YYYY-MM-DD]`. Preserves grep-parsability (`grep "^### \["`) while keeping the Obsidian outline usable at scale. Updated in Specifications, CLAUDE.md, and the grep example. (`implementation-proposal.md`)
+
 ## 2026-04-13 — Revision 2
 
 Refinements to `implementation-proposal.md`, `plan.md`, and `plan-checklist.md` based on comparative review against source material. See `revisions/revisions-2.md` for full rationale.
@@ -25,7 +41,7 @@ Major revision to `implementation-proposal.md`, `plan.md`, and `plan-checklist.m
 ### Added
 
 - **`PHILOSOPHY.md`** — Design philosophy document. Seven principles: compilation over retrieval, agent as writer, strict/flexible split, epistemic integrity, human as editor-in-chief, schema co-evolution, compounding value.
-- **`wiki/log.md`** — Chronological operation log restored from the original `llm-wiki.md`. Append-only, parseable with `grep "^## \[" log.md | tail -5`. Integrated into all three operations.
+- **`wiki/log.md`** — Chronological operation log restored from the original `llm-wiki.md`. Append-only, parseable with `grep "^### \[" log.md | tail -5`. Integrated into all three operations.
 - **`wiki/synthesis.md`** — Given a real operational role. Updated on every ingest, reviewed during lint.
 - **Generative lint** — Lint now includes a conceptual review phase: the agent identifies thinly covered topics, unanswered questions, and suggested investigations. Not just structural janitorial work.
 - **Specifications vs. guidance split** — CLAUDE.md reorganized into two sections: strict data contracts (frontmatter, callouts, directories, formats) and flexible guidance (goals and principles for each operation).

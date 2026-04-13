@@ -34,8 +34,9 @@ Tracks progress on the LLM Wiki implementation. See `plan.md` for details on eac
   - [ ] `obsidian create ... template=entity` works (or fallback documented)
   - [ ] Frontmatter intact, `{{date}}` resolved
   - [ ] Test page cleaned up
+  - [ ] Lint graph commands tested (`obsidian orphans`, `deadends`, `unresolved`) or fallback documented
 - [ ] **1.5** `CLAUDE.md` written:
-  - [ ] Specifications section (vault layout, frontmatter, TLDR, claim typing, cross-refs, index format, log format, conventions)
+  - [ ] Specifications section (vault layout, frontmatter, TLDR, claim typing, cross-refs, page naming, index format, log format, conventions)
   - [ ] Guidance section (ingest, query, lint, synthesis)
   - [ ] Wiki Conventions section (empty)
   - [ ] CLI commands adjusted based on 1.4 findings
@@ -49,8 +50,8 @@ Tracks progress on the LLM Wiki implementation. See `plan.md` for details on eac
 - [ ] **2.2** Ingest run via Claude Code
 - [ ] **2.3** Results verified:
   - [ ] Source summary page in `wiki/sources/` with correct frontmatter and TLDR
-  - [ ] Entity pages in `wiki/entities/` (no duplicates)
-  - [ ] Concept pages in `wiki/concepts/` (no duplicates)
+  - [ ] Entity pages in `wiki/entities/` (no duplicates, Title Case naming)
+  - [ ] Concept pages in `wiki/concepts/` (no duplicates, Title Case naming)
   - [ ] All claims properly typed (source callouts have links, analysis shows reasoning)
   - [ ] `wiki/index.md` updated
   - [ ] `wiki/log.md` entry appended
@@ -67,12 +68,14 @@ Tracks progress on the LLM Wiki implementation. See `plan.md` for details on eac
   - [ ] Answer cites specific wiki pages
   - [ ] Sourced claims distinguished from inferences
   - [ ] Dual output (wiki updates as side effect, if applicable)
+  - [ ] Log entry appended if a new page was created
 - [ ] **3.2** Lint tested:
   - [ ] Orphans, dead ends, unresolved links checked
   - [ ] Unverified claims and gaps scanned
   - [ ] Index consistency checked
   - [ ] Conceptual review performed (suggested investigations)
   - [ ] Report presented, no fixes without approval
+  - [ ] Log entry appended
 - [ ] **3.3** Issues recorded, committed to git
 
 ---

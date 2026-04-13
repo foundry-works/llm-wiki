@@ -51,7 +51,7 @@ vault/
 
 - **`raw/`** is never modified by the LLM. It's the source of truth the human curates.
 - **`wiki/`** is entirely LLM-owned. The human reads it; the LLM writes and maintains it.
-- **`wiki/log.md`** is an append-only chronological record of operations. Parseable with `grep "^## \[" log.md | tail -5`.
+- **`wiki/log.md`** is an append-only chronological record of operations. Parseable with `grep "^### \[" log.md | tail -5`.
 - **`wiki/synthesis.md`** is the evolving high-level synthesis. Updated on every ingest. Readable as a standalone summary.
 - **`templates/`** are Obsidian templates. The LLM uses them as starting points for new pages.
 - **`CLAUDE.md`** is the schema — loaded automatically by Claude Code. It defines specifications (data contracts) and guidance (principles and goals).
@@ -117,6 +117,10 @@ The critical distinction is Source vs. Analysis. If the LLM is paraphrasing, syn
 
 All cross-references use wikilinks (`[[Page Name]]`). Not raw markdown links. The graph, backlink resolution, and orphan detection depend on this.
 
+### Page Naming
+
+Page filenames use Title Case with spaces: `Transformer Architecture.md`, linked as `[[Transformer Architecture]]`. The filename must match the wikilink text exactly — Obsidian resolves links by filename. No special characters beyond spaces and hyphens. If a page name is ambiguous, disambiguate with a parenthetical: `Mercury (Planet).md`.
+
 ### Index Format
 
 `wiki/index.md` lists every wiki page organized by category. Each entry: one wikilink and a one-line TLDR.
@@ -138,7 +142,7 @@ No token budget. Keep entries concise. When the index becomes unwieldy to scan, 
 `wiki/log.md` is append-only. Each entry uses a consistent prefix so it's parseable with simple unix tools.
 
 ```markdown
-## [YYYY-MM-DD] operation | description
+### [YYYY-MM-DD] operation | description
 
 Brief details. What was ingested/queried/linted, what changed.
 ```
@@ -323,6 +327,7 @@ The three core operations. Each is described by its **goal** and **principles**,
 - Update `wiki/synthesis.md` — consider what the new source changes about the big picture.
 - Append an entry to `wiki/log.md`.
 - Commit via git.
+- For long sources (books, lengthy reports), ingest chapter by chapter or section by section. Each chunk gets its own source-summary page. This produces better extraction than ingesting a full document at once.
 
 **Available tools:**
 ```
@@ -454,6 +459,15 @@ obvious — use `[!analysis]`, not `[!source]`.
 All cross-references use wikilinks: `[[Page Name]]`.
 Not markdown links. The graph depends on this.
 
+### Page Naming
+
+Page filenames use Title Case with spaces: `Transformer Architecture.md`,
+linked as `[[Transformer Architecture]]`. The filename must match the
+wikilink text exactly — Obsidian resolves links by filename.
+
+No special characters beyond spaces and hyphens. If a page name is
+ambiguous, disambiguate with a parenthetical: `Mercury (Planet).md`.
+
 ### Index Format
 
 `wiki/index.md`: one wikilink + one-line TLDR per page, organized by
@@ -464,7 +478,7 @@ Rule of thumb: split when the index exceeds ~100 entries.
 ### Log Format
 
 `wiki/log.md`: append-only. Each entry:
-`## [YYYY-MM-DD] operation | description`
+`### [YYYY-MM-DD] operation | description`
 Log every ingest, every query that generates a page, every lint pass.
 
 ### Other Conventions
@@ -481,6 +495,9 @@ Log every ingest, every query that generates a page, every lint pass.
 - Every ingest and query updates the wiki — not just answers the
   immediate question. Index, log, and synthesis updates are part of
   the deliverable, not afterthoughts.
+- If a page grows past ~1,500 words, consider splitting it. An entity
+  page might spawn a dedicated comparison, timeline, or sub-topic page.
+  Each sub-page gets its own frontmatter, TLDR, and index entry.
 
 ## Guidance (Flexible)
 
@@ -493,6 +510,10 @@ wiki. Read the source, discuss what matters with the human, then update
 the wiki — creating new pages and revising existing ones as needed.
 Track provenance. Surface contradictions. Update the index, synthesis,
 and log when done. Commit via git.
+
+For long sources (books, lengthy reports), ingest chapter by chapter or
+section by section. Each chunk gets its own source-summary page. This
+produces better extraction than ingesting a full document at once.
 
 ### Query
 
