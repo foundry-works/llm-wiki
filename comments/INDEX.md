@@ -1,0 +1,395 @@
+# Comments Index
+
+## Questions
+
+- [002.md](002.md): Asks about failure modes — where does the wiki start fighting you?
+- [003.md](003.md): Asks how to decide when to create a new page vs. edit an existing one
+- [004.md](004.md): Asks how to share the knowledge base with a team vs. using RAG + MCP
+- [014.md](014.md): Asks if Cursor's Plan mode is similar to the LLM wiki pattern
+- [017.md](017.md): Asks if this just re-emphasizes persistent structured context via AGENTS.md
+- [026.md](026.md): Asks about rules for periodic cleaning and pruning of artifacts
+- [030.md](030.md): Asks how big this scales, e.g. for a PhD dissertation with vector RAG
+- [035.md](035.md): Asks whether this is feasible for enterprise data with complex technical PDFs
+- [063.md](063.md): Asks about combining LLM-as-a-judge with the wiki architecture
+- [066.md](066.md): Asks how to use the LLM wiki on an Ubuntu desktop PC
+- [087.md](087.md): Asks whether the wiki can explain its own structural evolution and reasoning
+- [088.md](088.md): Asks whether file hash changes should invalidate all derived propositions
+- [091.md](091.md): Asks whether index.md and log.md should be database tables instead
+- [102.md](102.md): Asks if the wiki pattern works better than or on par with RAG
+- [114.md](114.md): Asks if the LLM wiki is similar to the Zettelkasten system
+- [116.md](116.md): Asks how this differs from teaching your agent to use iwe-org/iwe
+- [129.md](129.md): Asks for a command-line alternative to Obsidian
+- [141.md](141.md): Asks whether to use one massive index or federated per-project indexes
+- [142.md](142.md): Asks if anyone has tested this pattern with local models
+- [148.md](148.md): Asks if anyone has made a Python implementation
+- [155.md](155.md): Asks what local LLM to use for a semiconductor wiki on modest hardware
+- [193.md](193.md): Asks if this is the same as Microsoft's RPG-encoder
+- [213.md](213.md): Asks whether to use one unified Obsidian vault or split by domain
+- [216.md](216.md): Asks how this differs from existing markdown memory solutions like mem-agent-mcp
+- [221.md](221.md): Asks whether this is really about knowledge graph design, not devops tooling
+- [225.md](225.md): Asks if any work is being done on Joplin integration
+- [227.md](227.md): Asks someone to share how they implemented the pattern
+- [232.md](232.md): Asks how the book was structured for the RAG system (chapters vs. smaller chunks)
+- [240.md](240.md): Asks if a tool exists to route recorded Codex CLI sessions into a wiki
+- [265.md](265.md): Asks about 4D evolutionary knowledge graphs as the missing piece in world models
+- [274.md](274.md): Asks whether a tool has been built based on the celestix-ifr theory
+- [280.md](280.md): Asks whether a type schema is needed to classify information in the wiki
+- [291.md](291.md): Asks about solutions for LLM-generated factual errors in mission-critical team wikis
+- [304.md](304.md): Asks whether PageIndex reasoning-based retrieval can overcome RAG limitations
+- [308.md](308.md): Asks about debugging persistent errors and contradiction handling as wiki scales
+- [312.md](312.md): Asks how hundreds of wiki files will impact costs, storage, and query latency
+- [318.md](318.md): Asks how to manage knowledge efficiently and avoid memory drift as it grows
+- [319.md](319.md): Asks how to feed local inputs to Grok via web without API access
+- [360.md](360.md): Asks how many wiki instances to maintain and whether to cross-query them
+
+## Implementations
+
+- [005.md](005.md): Shares a .brain folder pattern with markdown files for persistent agent memory
+- [013.md](013.md): Built llmbase with React UI, model fallback chains, and autonomous ingestion
+- [015.md](015.md): Built an exocortex that indexes session transcripts and reasoning threads
+- [016.md](016.md): Shares Skillnote, a registry for packaging wiki pages as versioned reusable skills
+- [019.md](019.md): Built browzy CLI implementing ingest/compile/query/lint with FTS5+BM25 search
+- [020.md](020.md): Building engram CLI that ingests sources, updates wiki pages, flags contradictions
+- [021.md](021.md): Built tracecraft for multi-agent coordination via shared S3/HuggingFace memory
+- [022.md](022.md): Shares commonplace implementation plus a curated list of similar projects
+- [023.md](023.md): Shares GitCMS, an MCP app for markdown-based research and note-taking
+- [024.md](024.md): Built two Claude skills: visual-brief for infographics and compound-dev for memory
+- [025.md](025.md): Shares meowary, a similar implementation with new ideas to integrate
+- [027.md](027.md): Built owletto, an entity-based memory system using PostgreSQL instead of filesystem
+- [029.md](029.md): Built Context Lattice, a Docker app with RAG, graph, vector, and semantic services
+- [031.md](031.md): Shares CRW, an open-source MCP tool for web scraping and knowledge base building
+- [032.md](032.md): Built engram: drop a source, agent reads it, updates wiki, flags contradictions
+- [033.md](033.md): Built Thinking-Space, a local-first AI-native markdown workspace IDE
+- [038.md](038.md): Built Veritas Acta with multi-model verification and cryptographic receipt chains
+- [039.md](039.md): Built Obsidian vault pipeline with AutoPilot mode for automated maintenance
+- [040.md](040.md): Built Obsidian Seed (vault wizard) and Mnemon (extraction pipeline) with personalization
+- [041.md](041.md): Shares a blog post documenting their personal knowledge base system build
+- [042.md](042.md): Testing a structured file system with cron heartbeat, inbox routing, and daily briefs
+- [043.md](043.md): Built wiki-skills, a set of skill files implementing the LLM wiki pattern
+- [044.md](044.md): Built a voice-first wiki with Telegram capture, two wiki layers, and no-invention rules
+- [045.md](045.md): Built a karpathy-kb skill for the LLM wiki pattern
+- [049.md](049.md): Built sage-wiki, a single Go binary for compile/search/query/lint with MCP server
+- [051.md](051.md): Adapted the LLM wiki for Vibe Sensei, an AI trading terminal with guardian agents
+- [052.md](052.md): Built Claude-persistent-memory using NotebookLM as the backing wiki layer
+- [053.md](053.md): Built magnus (Emacs manager) with wiki-like persistent knowledge plus a Claude Code PR
+- [054.md](054.md): Built Binder: structured data in SQLite rendering as editable markdown files
+- [055.md](055.md): Built karpathy-llm-wiki skill as plug-and-play install for Claude Code/Cursor/Codex
+- [057.md](057.md): Built a one-command installable skill for agent ingestion via npx
+- [060.md](060.md): Built NANTA for ingesting social media and converting bookmarks into podcasts
+- [061.md](061.md): Built LENS for distilling cross-paper patterns with contradiction matrix and lint
+- [062.md](062.md): Shares o-o, a polyglot bash/HTML tool for self-updating articles and wikis
+- [064.md](064.md): Built peeps-skill, applying the wiki pattern to people and orgs intelligence
+- [065.md](065.md): Created another llm-wiki skill implementation
+- [067.md](067.md): Built kb-template, a forkable repo using only the core wiki ideas
+- [068.md](068.md): Built CRATE, a file-first Python CLI (compile/ask/lint/ingest) for the wiki pattern
+- [069.md](069.md): Shares openarche, another implementation of the same idea
+- [070.md](070.md): Built an OpenClaw skill for tracing how ideas mature over time
+- [071.md](071.md): Built mindflow using Obsidian + Claudian plugin + GitHub for tracking
+- [073.md](073.md): Built llm-wiki CLI with smart ingestion, auto-linking, ReAct query, and lint
+- [074.md](074.md): Built Centel, applying the wiki concept to product management documentation
+- [075.md](075.md): Built Memex, an open-source mobile app auto-organizing recordings into P.A.R.A. wiki
+- [076.md](076.md): Built AgenticResearchWiki for execution-side research with training configs and eval records
+- [078.md](078.md): Built knowledge-engine with dual Obsidian wiki + Memvid layers and drift detection
+- [080.md](080.md): Built an OpenClaw skill for conversational wiki building
+- [081.md](081.md): Created IDEA.md, a vendor-neutral standard file format for portable idea intent
+- [084.md](084.md): Built Palinode with git-versioned markdown, 18 MCP tools, hybrid BM25+vector search
+- [085.md](085.md): Built Freelance with structural provenance, content hashing, and query-time compilation
+- [089.md](089.md): Built anamnesis, a provenance layer tracking how knowledge was compiled and why
+- [090.md](090.md): Built Zorro (drift-detection plugin) and mobile capture pipeline for institutional use
+- [092.md](092.md): Built ra-h_os, a SQLite-based version after filesystem approach stopped scaling
+- [094.md](094.md): Built centro, a personal agent that talks on your behalf using a markdown KB
+- [095.md](095.md): Built ELF for research with base-delta protocol and PARA+wiki architecture
+- [097.md](097.md): Shares deeper sage-wiki architectural lessons on pipelines, ontology, and self-learning
+- [098.md](098.md): Shares an M&A due diligence agents implementation example
+- [099.md](099.md): Built thinking-mcp with 8000+ cognitive nodes, typed edges, decay, and 16 MCP tools
+- [103.md](103.md): Shares a privacy-layer middleware for PII sanitization before LLM inference
+- [105.md](105.md): Shares ai-workspace, a knowledge base abstracting issues, plans, and snippets
+- [106.md](106.md): Shares Waykee Cortex with hierarchical inheritance and dual knowledge+work dimensions
+- [108.md](108.md): Shares JournalClaw, a macOS app with immutable raw sources and compiled journal entries
+- [109.md](109.md): Shares a forked LLM-wiki repo with improvements
+- [110.md](110.md): Shares obsidian-wiki, an easy Obsidian setup using Karpathy's gist
+- [111.md](111.md): Shares a one-click upgrade prompt that migrates scattered memory files to wiki structure
+- [113.md](113.md): Shares supavector, a different approach to the knowledge base problem
+- [115.md](115.md): Shares second-brain, an installable wiki via OpenClaw or Claude Code
+- [121.md](121.md): Shares a Claude skill combining compound-engineering-plugin ideas with wiki pattern
+- [122.md](122.md): Shares an implementation using Gemini 3.1 Pro via Gemini Code Assist
+- [123.md](123.md): Shares paper-spec, adapting the wiki for research repositories with provenance
+- [124.md](124.md): Shares a bundled Claude plugin for the LLM wiki pattern
+- [125.md](125.md): Shares MindOS, an open-source multi-agent wiki with 19 connected agents
+- [128.md](128.md): Shares agent-wiki, an open-source 5-command markdown wiki with no database
+- [130.md](130.md): Shares Hex2077-Agent, a digital persona system with auto-ingestion and merging
+- [131.md](131.md): Shares llmwiki.app, an OSS web app with document upload and MCP integration
+- [135.md](135.md): Shares knowmine.ai, an MCP-based cloud-native knowledge base with semantic search
+- [136.md](136.md): Shares an npm-installable llm-wiki-compiler CLI tool
+- [137.md](137.md): Shares a tag-based Obsidian workflow using auto-tagging instead of wiki links
+- [145.md](145.md): Shares WALI, a local Mac Mini daemon that auto-compiles voice memos and files into wiki
+- [151.md](151.md): Shares atomic-knowledge, a markdown-first work-memory protocol for agents
+- [152.md](152.md): Shares beyond-the-token-bottleneck, a heavily revised implementation
+- [157.md](157.md): Shares a llm-wiki-template repo and upcoming Claude skill
+- [159.md](159.md): Shares memex, a sandboxed wiki daemon wrapping claude -p
+- [162.md](162.md): Shares an AGENTS.md schema with quality rules and spaced-repetition flashcards
+- [164.md](164.md): Shares rock-star-skills, a minimal opinionated version of the wiki pattern
+- [170.md](170.md): Shares llm-fandom, an AI-powered wiki generator with entity extraction
+- [171.md](171.md): Shares sage-wiki with multi-format extraction and customizable prompts
+- [173.md](173.md): Shares llm-wiki-kit, a functional MCP server for autonomous wiki maintenance
+- [176.md](176.md): Shares a built-in web UI for sage-wiki as an Obsidian alternative
+- [177.md](177.md): Shares OMEGA, local semantic search over markdown with an Obsidian plugin
+- [178.md](178.md): Duplicate OMEGA post by the org account
+- [179.md](179.md): Shares agentic-wiki-builder with git-branch provenance tracking and DuckDB checks
+- [182.md](182.md): Shares claude-playbook-plugin with intent tracking, mind map, and work tracking
+- [185.md](185.md): Shares expanded LLM-wiki tool with bootstrap, provenance hashing, and 5 platform configs
+- [188.md](188.md): Shares sp-context, a Git repo + CLI implementing the wiki pattern for teams
+- [189.md](189.md): Shares an org-roam triage skill for Emacs covering wiki ideas
+- [194.md](194.md): Shares DPC Messenger with multi-agent knowledge negotiation and consensus voting
+- [195.md](195.md): Shares llm-wiki skill set for software project management with ADRs and runbooks
+- [197.md](197.md): Shares llm-wiki-vault with provenance tracking and zero-token linting
+- [198.md](198.md): Shares LLM Local Recall, turning digital history into searchable archive
+- [201.md](201.md): Claude Code + Obsidian plugin for auto-extracting cross-referenced wiki pages
+- [202.md](202.md): Quicky Wiki with confidence-scored claims, contradiction detection, interactive dashboard
+- [204.md](204.md): LLM wiki for academic research in music/philosophy with domain-specific page types
+- [205.md](205.md): remember-md — builds Obsidian wiki from past AI chat sessions
+- [207.md](207.md): Offline LLM Wiki implementation using Ollama on a local machine
+- [210.md](210.md): MCP server (openaugi) for personal Obsidian vault with 4000+ notes
+- [212.md](212.md): SwarmVault — TypeScript CLI with knowledge graph, community detection, MCP server
+- [215.md](215.md): llm-wiki skill + CLI implementation
+- [219.md](219.md): codesight — deterministic codebase wiki without LLM using compiler APIs and regex
+- [229.md](229.md): llm-context-base — personal operating system with decision learning loops and self-training
+- [234.md](234.md): personal-knowledge-base Claude Skill with visual concept graph generation
+- [235.md](235.md): blink-query — DNS-analogy typed records with benchmarks on 3 public corpora
+- [236.md](236.md): sage-wiki — cross-platform binary with TUI, cost optimization, and batch compile
+- [237.md](237.md): cog — personal knowledge management over text
+- [238.md](238.md): llm-wiki (Pratiyush) — work-in-progress implementation seeking contributors
+- [239.md](239.md): Quicky Wiki update — zero-config CLI with confidence-scored claims and live dashboard
+- [242.md](242.md): LLM Wiki + Logseq/Obsidian with two-layer cache (L1 auto-loaded + L2 on-demand)
+- [244.md](244.md): TreeSearch — structure-aware tree search with zero model dependencies, millisecond latency
+- [247.md](247.md): ScholarAIO — extends wiki into executable workflows and self-improving research
+- [248.md](248.md): Semantica — semantic layer for structured knowledge graphs with provenance
+- [250.md](250.md): ToolKode — WikiGraph engine added to existing toolkit
+- [253.md](253.md): llm-wiki skill for Claude Code (legion-mind)
+- [256.md](256.md): llm-wiki (Pratiyush) update with live demo, heatmaps, and AI-consumable exports
+- [257.md](257.md): SwarmVault update (v0.1.27) with parser-backed code analysis across 12+ languages
+- [258.md](258.md): Venn diagram + wiki tool with interactive nested diagrams and AI-powered lint
+- [259.md](259.md): grover — agentic file system with graph traversal and MCP integration
+- [262.md](262.md): celestix-ifr — graph traversal retrieval with induced-fit embedding mutation
+- [263.md](263.md): Wikigen — CLI that turns any folder into a structured interlinked markdown wiki
+- [264.md](264.md): WikiMind — Python/FastAPI + React implementation with typed JSON contract
+- [267.md](267.md): AI-Context-OS — Tauri + Rust + React desktop app with progressive memory and governance
+- [268.md](268.md): unified-memory-ai-agents — production implementation with auto-pruning and feedback loops
+- [270.md](270.md): wikiclaudia — locally serves personal wikis in Wikipedia-style reader
+- [276.md](276.md): RTFM — search layer for Obsidian vaults with FTS5, semantic search, and graph analysis
+- [277.md](277.md): Second brain Claude plugin with articles about the approach
+- [279.md](279.md): Chrome extension (llm-wiki-clipper) that clips web pages to markdown for the raw layer
+- [281.md](281.md): OORAG (Object-Oriented RAG) with structured entity objects and type constraints
+- [282.md](282.md): LLM4Rec wiki for recommendation system research built with Qwen Code
+- [284.md](284.md): SwarmVault update (v0.6.1) with personal knowledge ingest and guided source sessions
+- [285.md](285.md): OmegaWiki — full-lifecycle research platform with 20 Claude Code skills
+- [287.md](287.md): Knowledge Forge — Node.js implementation with web UI, lint pass, and wiki links
+- [288.md](288.md): Continuity — MCP server with narrative synthesis, learning signals, and memory versioning
+- [293.md](293.md): md2LLM — uses wiki markdown files to generate training data and fine-tune a local model
+- [295.md](295.md): ontomics — code semantic index using tree-sitter, TF-IDF, and embedding clustering
+- [297.md](297.md): Team-oriented wiki with Claude Code native integration, git submodules, and 5 skills
+- [298.md](298.md): claude-ltm — long-term memory implementation for Claude projects
+- [301.md](301.md): Built LLM Wikidata using ChromaDB for entity linking to prevent duplicate nodes
+- [302.md](302.md): Built ask-shorty with 5-layer retrieval fusion, knowledge graph, and evaluation framework
+- [303.md](303.md): Built an open-source filename enforcer CLI for wiki file naming conventions
+- [305.md](305.md): Built llmwiki-cli for LLM agents to build wikis via filesystem and git
+- [307.md](307.md): Built llm-wiki-skill, a lightweight CLI agent skill for file ingestion and wiki merging
+- [309.md](309.md): Building axiom-wiki, an open-source CLI implementing the full LLM wiki pattern
+- [310.md](310.md): Shares codesight, a code wiki built from AST rather than LLMs
+- [315.md](315.md): Built claude-obsidian plugin with hot cache, contradiction flagging, and 8-category lint
+- [317.md](317.md): Built LLMWikiController extending the wiki pattern with workflow optimizations
+- [326.md](326.md): Built agent-wiki Python toolkit with link-aware operations and multi-agent kanban
+- [327.md](327.md): Updated SwarmVault v0.7.25 with YouTube ingest, 50+ formats, and hybrid search
+- [330.md](330.md): Built knowledge-pipeline skill with BFS reasoning chains and contradiction detection
+- [331.md](331.md): Created a skill adding knowledge graph capability with network analysis for gap detection
+- [332.md](332.md): Built Automaton Memory System with hierarchical memory and Obsidian plugin
+- [333.md](333.md): Built Cortex MCP server with OWL-RL ontology and deterministic SPARQL reasoning
+- [335.md](335.md): Updated axiom-wiki, an open-source self-maintaining wiki implementation
+- [336.md](336.md): Shares Basic Memory, a knowledge base tool matching the LLM wiki pattern
+- [339.md](339.md): Built OmegaWiki, a full-lifecycle research platform with 20 Claude Code skills
+- [340.md](340.md): Built an Obsidian LLM wiki plugin for local Ollama models with compounding knowledge
+- [341.md](341.md): Shares Vectorless for LLM-based document navigation and knowledge graph construction
+- [342.md](342.md): Built llm-project-wiki prompt for codebases with diff-based ingest and gap detection
+- [343.md](343.md): Built llm-context-base git template with human training period and tiered lint
+- [345.md](345.md): Built memory-toolkit for Claude Code with PreCompact hooks and session lifecycle
+- [347.md](347.md): Built AIContext to read local activity data and expose it as a queryable subagent
+- [350.md](350.md): Shares memex, an MIT-licensed open-source implementation of the wiki pattern
+- [352.md](352.md): Shipped personal knowledge base in CowAgent (43k+ stars) with conversational ingest
+- [353.md](353.md): Built agentic-coop-db Postgres gateway for multi-agent distributed wiki sharing
+- [354.md](354.md): Built kb-wiki MCP-native tool with SQLite vector search and YAML subagents
+- [359.md](359.md): Built multi-agent wiki toolkit with 13 extensions for concurrent agent coordination
+- [363.md](363.md): Built aiwg with vertically aligned taxonomy so agents build context while traversing
+- [382.md](382.md): Built wiki-kb with schema validation, entity registry, and MCP server interface
+
+## Other
+
+- [001.md](001.md): Advocates using gists to push knowledge between LLM frontiers
+- [006.md](006.md): Suggests combining the wiki with Karpathy's "append-and-review note" concept
+- [007.md](007.md): Proposes using Obsidian tags with frontmatter fields for agent working memory
+- [008.md](008.md): Describes a learning directory where agents teach concepts and track progress
+- [009.md](009.md): Suggests telling an LLM to write an extension for inline image reading
+- [010.md](010.md): Recommends Obsidian's first-party Bases plugin over DataView
+- [011.md](011.md): Enthusiasm about organizing dispersed notes (in Spanish)
+- [012.md](012.md): Suggests pre-generating image descriptions so LLMs process everything in one pass
+- [028.md](028.md): Tip — adding TLDRs to wiki articles saves tokens for both humans and LLMs
+- [034.md](034.md): Notes this looks exactly like the approach promptql.io took
+- [036.md](036.md): Critiques that truth maintenance is understated; warns of silent bad synthesis
+- [037.md](037.md): Detailed critique emphasizing epistemic integrity, source citations, and review-gated edits
+- [046.md](046.md): Shares experience using the wiki to plan a Japanese-English dictionary project
+- [047.md](047.md): Mentions Obsidian CLI has been a lifesaver for this pattern
+- [048.md](048.md): Shares six production lessons: classify before extract, token budgets, dual outputs
+- [050.md](050.md): Personal testimonial about implementing the pattern as a life operating system
+- [056.md](056.md): Suggests adding a divergence check with counter-arguments on every concept update
+- [058.md](058.md): Brief praise of Thinking-Space (reply to comment 033)
+- [059.md](059.md): Suggests using TagSpaces for raw source management alongside the wiki layer
+- [072.md](072.md): Reflects on using the wiki as continuously improving agent memory in everyday work
+- [077.md](077.md): Quotes and endorses the six production lessons from comment 048
+- [079.md](079.md): Predicts the LLM wiki will evolve into 24/7 autonomous self-evolving agents
+- [082.md](082.md): Proposes using the wiki architecture for a self-improving company intranet
+- [083.md](083.md): Shares experience getting started with Obsidian as a second brain with AI agents
+- [086.md](086.md): Describes routing wiki output into a graph database built on an ontology
+- [093.md](093.md): Agrees the pattern works well as long-term memory organization for agents
+- [096.md](096.md): Proposes an AGENTS.md standard for AutoWiki repos as a revision of the gist
+- [100.md](100.md): Argues the wiki maps to Kimball's dimensional modeling; shares CARMA framework
+- [101.md](101.md): Spam promotional post for an AI consulting company
+- [104.md](104.md): Mentions Recursive Language Models (RLMs) as a related approach
+- [107.md](107.md): Notes compiled-wiki retrieval is better but meta-query ranking needs tightening
+- [112.md](112.md): Compares the pattern to Nvidia's cuDS/cuVS libraries
+- [117.md](117.md): Confirms the pattern is similar to Zettelkasten
+- [118.md](118.md): Describes MemoOpen, a lifelong personal data foundation and book project
+- [119.md](119.md): Chinese-language duplicate of the MemoOpen post
+- [120.md](120.md): Warns that "You" in the gist creates a role-mapping conflict for agents
+- [126.md](126.md): Praises the pattern and shares experience building team wikis with sub-agents
+- [127.md](127.md): Proposes epistemic integrity with source hashing, multi-model consensus, and cryptographic receipts
+- [132.md](132.md): Replies that Obsidian is just a viewer; the wiki is markdown + git
+- [133.md](133.md): Promotes MarkSlides, a Marp-based slide tool (tangential)
+- [134.md](134.md): Discusses mapping KU provenance model to research repo's git history
+- [138.md](138.md): Reports using the obsidian-wiki repo with local Gemma 4 model
+- [139.md](139.md): Shares experience using Obsidian + Ollama/LMStudio with sub-20b local models
+- [140.md](140.md): Shares a detailed multi-agent self-improving system vision using Obsidian
+- [143.md](143.md): Suggests Obsidian CLI or ekphos as command-line alternatives
+- [144.md](144.md): Shares experience with local Gemma 4 on obsidian-wiki
+- [146.md](146.md): Describes IdeasLake and an incremental digest pipeline for long-running idea threads
+- [147.md](147.md): Responds about semiconductor AI with a PCBA decision-layer tool concept
+- [149.md](149.md): Suggests combining the wiki pattern with Zettelkasten for organizing digital mess
+- [150.md](150.md): Envisions a self-improving multi-agent system with specialized agents and parallel execution
+- [153.md](153.md): Describes session MD format for human-AI collaboration with detailed section breakdown
+- [154.md](154.md): Continues session MD breakdown with sections for decisions, state, and next steps
+- [156.md](156.md): Shares experience running the pattern in enterprise service delivery management
+- [158.md](158.md): Shares a minimal prompt-based approach to creating wiki skills without dependencies
+- [160.md](160.md): Critiques LLM-written summaries as removing cognitive work where understanding forms
+- [161.md](161.md): Lists 8 limitations of the LLM wiki pattern including error drift and hallucinated merges
+- [163.md](163.md): Connects the pattern to 30 years of knowledge management theory for enterprise agents
+- [165.md](165.md): Critiques the pattern as missing the Generation Effect where active processing aids learning
+- [166.md](166.md): Warns about cache poisoning risk and emphasizes validation at every step
+- [167.md](167.md): Dismissive comment calling the pattern a "slop machine"
+- [168.md](168.md): Defends the pattern against the "slop machine" critique
+- [169.md](169.md): Describes a domain-specialized version for multilingual fiction writing and game design
+- [172.md](172.md): Agrees the wiki pattern is similar to Zettelkasten
+- [174.md](174.md): Claude-authored letter thanking Karpathy for the pattern as an abstract framework
+- [175.md](175.md): Describes building a pyramid memory architecture for a digital self
+- [180.md](180.md): Reports using an existing org-roam knowledge graph built years ago with Emacs
+- [181.md](181.md): Critiques the pattern as good for new projects but unnecessary for mature codebases
+- [183.md](183.md): Compares the pattern to OpenClaw's persistent memory and questions lint automation
+- [184.md](184.md): Dismisses the pattern as "vibecoded openclaw memory"
+- [186.md](186.md): Notes the schema problem is solved; the real gaps are formation and retrieval
+- [187.md](187.md): Argues the query step breaks at scale; promotes OMEGA for semantic search
+- [190.md](190.md): Brief comment about leaving model accuracy to business personnel
+- [191.md](191.md): Advocates Obsidian as a standard for wiki-based knowledge management
+- [192.md](192.md): Suggests extending the pattern with reliable page-level citation tracking
+- [196.md](196.md): Shares an MCP-based knowledge learning system that self-manages corrections
+- [199.md](199.md): Predicts three future trajectories: automated collector, context assembler, Confluence replacement
+- [200.md](200.md): Suggests using git instead of log.md; notes log files confuse less intelligent models
+- [203.md](203.md): Proposes AI designing its own deterministic replacements with empirical trust boundaries
+- [206.md](206.md): Evaluates Obsidian vs SilverBullet for distributed shared knowledge bases
+- [208.md](208.md): Built a deterministic retrieval system for n8n; asks about hybrid approaches
+- [209.md](209.md): Speculates Grokipedia could become a large-scale version of this pattern
+- [211.md](211.md): Extends the pattern with decision-based learning loops beyond simple write-back
+- [214.md](214.md): Asks for examples one could refer to
+- [217.md](217.md): Suggests a self-improving Claude system as a potent additional layer
+- [218.md](218.md): Claims to have been running this exact pattern at work for some time
+- [220.md](220.md): Suggests mempalace is a different tool (RAG/recall vs. compiled wiki)
+- [222.md](222.md): Points out the pattern applies to creative writing, not just code projects
+- [223.md](223.md): Recommends saved.md as a useful companion tool for sharing gists
+- [224.md](224.md): Mentions saved.md as a handy companion tool
+- [226.md](226.md): Explains MemPalace is recall-focused while wiki is compilation-focused; building for teams
+- [228.md](228.md): Warns that AI hallucinations can become permanently embedded as facts in the wiki
+- [230.md](230.md): Uses the wiki pattern to preserve a deceased mother's book as a living memory
+- [231.md](231.md): Reports a 404 error on a linked OpenClaw skill
+- [233.md](233.md): Building hierarchical team knowledge; distinguishes recall from compiled knowledge
+- [241.md](241.md): Discusses applying the wiki to Minecraft server metadata at scale
+- [243.md](243.md): Suggests a simple bash loop to route codex sessions into the wiki
+- [245.md](245.md): Explains sage-wiki MCP can capture knowledge directly from AI conversations
+- [246.md](246.md): Replies "Very interesting" to a thinking-MCP comment
+- [249.md](249.md): Interested in applying the pattern to TiddlyWiki and Nextcloud Collectives
+- [251.md](251.md): Critiques wiki build as too niche/expensive compared to building a local RAG in one day
+- [252.md](252.md): Indexes Claude session JSONL for deeper context; uses SQLite and Obsidian for team QA
+- [254.md](254.md): Advocates "Run, don't Read" approach for deterministic template-based execution
+- [255.md](255.md): Uses actor-network-inspired graph to prevent hallucination propagation via typed associations
+- [260.md](260.md): Extends the gist as "From LLM Wiki to Creative DNA" concept
+- [261.md](261.md): Shares agent's response and adoption plan for the wiki pattern (screenshots)
+- [266.md](266.md): Notes source citations are one of the trickiest parts of the pattern
+- [269.md](269.md): Proposes BM25 + vector embedding hybrid retrieval with RRF reranking
+- [271.md](271.md): Extends wiki so entries require personal thinking; LLM challenges understanding first
+- [272.md](272.md): Philosophical reflection on AI tooling; wiki is a good start but not the end game
+- [273.md](273.md): Proposes query-time compilation with smaller knowledge units validated against sources
+- [275.md](275.md): Offers free PDF-to-markdown conversion for wiki builders (anyformat-ai)
+- [278.md](278.md): Suggests using `ls` instead of maintaining an index file
+- [283.md](283.md): Uses actor-network graph with typed associations to prevent error propagation
+- [286.md](286.md): Comments that AI-Context-OS feels too heavy for the wiki pattern
+- [289.md](289.md): Suggests the concept could be extended to autonomous "perpetual thinking wikis"
+- [290.md](290.md): Argues knowledge curation (not search) is the big data problem for AI
+- [292.md](292.md): Building a similar workflow using Grok, GitHub, Emacs org-roam, inspired by Zero-Human Org
+- [294.md](294.md): Requests arxiv endorsement for an AI safety paper (off-topic)
+- [296.md](296.md): Wiki pattern becomes transformative as a decision-support system, not just a knowledge base
+- [299.md](299.md): Proposes identity-aware filter that evolves and scores sources based on user role
+- [300.md](300.md): Suggests adding an identity-aware filter producing different wiki pages per user role
+- [306.md](306.md): Describes reasoning-based navigation in Waykee Cortex with structured knowledge hierarchy
+- [311.md](311.md): Suggests using metadata and cached document relations to optimize LLM query routing
+- [313.md](313.md): Suggests metadata and cached relations so LLM checks relationships before full docs
+- [314.md](314.md): Details compiling a personal Roam knowledge graph as structured context for LLM consumption
+- [316.md](316.md): Argues the wiki needs "inner grooves" to better orient knowledge structure
+- [320.md](320.md): Ran wiki vs. RAG tests; combined approach never lost a single evaluation round
+- [321.md](321.md): Describes Grok-via-web-chat workflow with Emacs/magit for session memory management
+- [322.md](322.md): Proposes cryptographic receipt verification to prove wiki content was LLM-generated
+- [323.md](323.md): Argues repos compound in the AI era when knowledge becomes durable infrastructure
+- [324.md](324.md): Proposes extending wiki to an epistemic map tracking uncertainty and staleness
+- [325.md](325.md): Wrote a simpler gist-native "KIOSK LLM Wiki" version aimed at vibe coders
+- [328.md](328.md): Analyzed wiki vs. curated context; wiki excels at 50-200 entries but faces false coherence at scale
+- [329.md](329.md): Tip — add a CLAUDE.md rule to prefer scripts for bulk operations over file-by-file edits
+- [334.md](334.md): Says "following" in response to the PageIndex question (minimal)
+- [337.md](337.md): Distinguishes LLM-authored wiki (research index) from human-authored wiki (true second brain)
+- [338.md](338.md): Shares experience independently arriving at the same three-layer architecture from constraints
+- [344.md](344.md): Replies that llm-context-base's training period installs an identity-aware filter over ~30 days
+- [346.md](346.md): Argues humans must manage AI-curated knowledge; recommends SQLite, BM25, TREESEARCH
+- [348.md](348.md): Defends human-readable markdown over SQLite/vector DBs; discusses design tradeoffs
+- [349.md](349.md): Praises claude-obsidian's hot cache and compares it to llm-context-base's approach
+- [351.md](351.md): Critiques Obsidian as proprietary; links Engelbart's 1992 Dynamic Knowledge Repositories vision
+- [355.md](355.md): Excited about applying the pattern to Minecraft server listing sites
+- [356.md](356.md): Duplicate post of OmegaWiki (same as 339)
+- [357.md](357.md): Argues markdown is the best LLM format because it mirrors Wikipedia and scientific papers
+- [358.md](358.md): Shares production experience with 4 claim types, staleness scoring, and infra layer
+- [361.md](361.md): Critiques the pattern for not solving lifecycle, epistemic filtering, or entropy
+- [362.md](362.md): Advises on wiki instance organization: private, public, and per-company shared spaces
+- [364.md](364.md): Proposes a social network of personal knowledge graphs with git-based cross-validation
+- [365.md](365.md): Claims >90% of comments are LLM-written; provides regex-based detection evidence
+- [366.md](366.md): Defends against LLM-detection complaints; says topic matters more than authorship
+- [367.md](367.md): Criticizes LLM-written comments and self-promotion as undermining the discussion
+- [368.md](368.md): Duplicate post of OmegaWiki (same as 339 and 356)
+- [369.md](369.md): Agrees with dead internet theory critique of LLM-generated comments
+- [370.md](370.md): Pushes back on Obsidian vendor lock-in concern; no real lock-in with markdown files
+- [371.md](371.md): Applies wiki pattern to agent harnesses; wrote up cognitive scaffolding ideas
+- [372.md](372.md): Shares practical Claude Code session persistence architecture with typed files
+- [373.md](373.md): Appreciates framing of LLM as invisible bookkeeping infrastructure, human as curator
+- [374.md](374.md): Shares 6-month production experience with claim types, staleness scoring, and infra layer
+- [375.md](375.md): Defends LLM-assisted commenting; says protesting it is like complaining about spellcheck
+- [376.md](376.md): Minimal non-substantive email reply quoting previous comment
+- [377.md](377.md): Criticizes OmegaWiki as derivative; questions why everyone defaults to Markdown
+- [378.md](378.md): Defends against dead internet critique; says internet is alive, just different texture
+- [379.md](379.md): Shares FUNGI framework for turning fleeting notes into concept notes with ethical guardrails
+- [380.md](380.md): Suggests skipping filesystem and using memory-enabled LLM chat as a lightweight wiki
+- [381.md](381.md): Proposes combining PageIndex retrieval with LLM Wiki as a semantic cache layer
+- [383.md](383.md): Defends LLM-generated comments and project sharing against thread quality complaints
+- [384.md](384.md): Advocates Engelbart's Dynamic Knowledge Repositories; files should not be copied for ingestion
+- [385.md](385.md): Agrees with LLM-comment critique; warns about synthetic echo chambers and catastrophic rot
+- [386.md](386.md): Defends project sharing; non-native speakers need LLM help to express ideas well
