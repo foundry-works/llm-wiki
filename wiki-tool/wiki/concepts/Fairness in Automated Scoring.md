@@ -1,6 +1,8 @@
 ---
 type: concept
-sources: [[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]]
+sources:
+  - "[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]"
+  - "[[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]"
 created: "2026-04-16"
 updated: "2026-04-16"
 status: current
@@ -50,6 +52,25 @@ tags: [automated-scoring, fairness, subgroups, validity]
 > [!source] Direct fairness explorations exist for GRE and TOEFL.
 > "An example of a direct exploration of the question of fairness of automated scoring in the context of the GRE program can be found in Bridgeman et al. (2009) and a similar investigation for the TOEFL iBT test in Enright and Quinlan (2010)." [[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]
 
+## Wood et al. (2021) corroborating tooling and methods
+
+Wood's Standard 3 ("Scores produced by AS should demonstrate fairness for all populations") extends the Williamson subgroup-checks model with two additional references from the fairness-tooling literature. Wood frames subgroup H-AS mean differences as "a common approach" rather than the approach, explicitly leaving room for alternative fairness-evaluation designs.
+
+> [!source] Wood names subgroup H-AS mean-difference comparison as a common approach.
+> "A common approach to addressing this standard is to compare human-to-AS engine mean score differences between a majority group and subgroups of interest (Madnani et al., 2017; Williamson, Xi, & Breyer, 2012). Those differences should be similar, so when larger differences are observed for a subgroup of interest, it indicates possible bias." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] RSMTool is open-source software for subgroup evaluation (Madnani et al. 2017, as cited in Wood 2021).
+> "RSMTool [software for evaluating subgroup differences in automated scoring] considers how well the automated scores agree with the human scores (or another, user-specified gold standard criterion) and whether this agreement is consistent across different groups of test-takers" (Madnani et al. 2017, p. 5, as quoted in Wood et al.). [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] Differential feature functioning flags problematic features (Penfield 2016; Zhang et al. 2017, as cited in Wood 2021).
+> "AS professionals should also consider the feature set used in an engine. Construct-irrelevant features should be avoided, especially features that may advantage or disadvantage one subgroup over another. Differential feature functioning provides a statistical methodology to identify any problematic features (Penfield, 2016; Zhang, Dorans, Li, & Rupp, 2017)." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] RSMTool includes Differential Feature Functioning (DFF) analysis (Madnani et al. 2017, as cited in Wood 2021).
+> "RSMTool also includes Differential feature functioning (DFF) analysis... This approach compares the mean values of a given feature for test-takers with the same score but belonging to different subgroups" (Madnani et al. 2017, p. 5, as quoted in Wood et al.). [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!analysis] DFF is a feature-level fairness check that Williamson's framework does not include.
+> Williamson's five subgroup checks operate at the score level (mean differences, associations, generalizability, prediction, decisions). DFF operates at the feature level: it compares the values of a single engine feature across subgroups conditional on score. That catches a specific failure mode — a feature that carries subgroup-correlated signal orthogonal to the construct — that score-level checks can miss when the overall score is well-calibrated. Penfield (2016) and Zhang et al. (2017) are cited through Wood; ingesting either would deepen the wiki's coverage of feature-level fairness.
+
 ## Key Claims
 
 > [!analysis] The narrow scoping is analytically clean but politically fragile.
@@ -66,6 +87,7 @@ tags: [automated-scoring, fairness, subgroups, validity]
 - Cross-cuts every empirical area of the [[Automated Scoring Evaluation Framework]].
 - Operationalized via [[Standardized Mean Score Difference]] (quantitative), [[Human-Automated Score Agreement]], [[Generalizability of Automated Scores]], [[Association with Independent Measures]] (qualitative).
 - Decision-level differences connect to [[Automated Scoring Implementation Models]] impact analysis.
+- Standard 3 of [[Automated Scoring Standards of Best Practice]].
 
 ## Open Questions
 

@@ -1,6 +1,8 @@
 ---
 type: concept
-sources: [[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]]
+sources:
+  - "[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]"
+  - "[[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]"
 created: "2026-04-16"
 updated: "2026-04-16"
 status: current
@@ -23,15 +25,22 @@ tags: [statistics, agreement, fairness, automated-scoring]
 
 ## Thresholds
 
-**Table 1.** SMD flagging thresholds used by ETS.
+**Table 1.** SMD flagging thresholds used by ETS, with the CTB variant.
 
-| Scope | Flagging threshold |
-|---|---|
-| Overall sample | SMD > 0.15 |
-| Any subgroup of interest (fairness check) | SMD > 0.10 |
+| Scope | Flagging threshold | Origin |
+|---|---|---|
+| Overall sample | SMD > 0.15 | Williamson, Xi, & Breyer (2012) |
+| Overall sample (CTB variant) | SMD > 0.12 | McGraw-Hill Education CTB (2014), as cited by Wood et al. (2021) |
+| Any subgroup of interest (fairness check) | SMD > 0.10 | Williamson, Xi, & Breyer (2012) |
 
 > [!source] The subgroup threshold is stricter than the overall threshold.
 > "We have established a more stringent criterion of performance, setting the flagging criteria at .10, and applied this criterion to all subgroups of interest to identify patterns of systematic differences in the distribution of scores between human scoring and automated scoring for subgroups." Reference: Ramineni, Williamson, & Weng (2011). [[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]
+
+> [!source] CTB tightens the overall threshold to 0.12 to reduce subgroup false negatives.
+> "Williamson, Xi, and Breyer (2012) flag the SMD if the difference between automated scores and human scores is greater than .15 in absolute value. Similarly, they flag the SMD for a subgroup if the difference between the automated scores and human scores for that subgroup is greater than .10 in absolute value. Because the larger the population SMD value the more likely the subpopulation SMD value will be flagged, CTB reduced the amount of SMD separation tolerated by flagging the population SMD if it exceeds .12 in absolute value" (McGraw-Hill Education CTB 2014, p. 15, as quoted in Wood et al. 2021). [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!analysis] The 0.12 CTB variant is a live disagreement, not a correction.
+> Both the 0.15 Williamson value and the 0.12 CTB tightening continue to circulate in the literature. Wood et al. (2021) list Williamson's 0.15 in Standard 1's Table 2 while quoting CTB's 0.12 elsewhere in the same paper, without adjudicating. A conservative practitioner will apply 0.12 (the tighter bound). A practitioner seeking continuity with historical ETS practice will apply 0.15. The wiki surfaces both and does not collapse to one.
 
 ## Why it matters
 
@@ -58,6 +67,12 @@ tags: [statistics, agreement, fairness, automated-scoring]
 - Part of the Evaluation area of the [[Automated Scoring Evaluation Framework]].
 - Extended to subgroups as the primary fairness flag (0.10 threshold).
 - Applied to [[e-rater]] operationally.
+- Codified alongside [[Standard Deviation Ratio]] and [[Exact Agreement Rate Difference]] in Wood's [[Automated Scoring Standards of Best Practice]] Standard 1.
+- CTB 0.12 variant surfaced in [[Williamson 2012 vs Wood 2021 - Automated Scoring Standards]] as a live disagreement.
+
+## Contradictions & Tensions
+
+- **CTB 0.12 vs. Williamson 0.15 overall SMD flag.** See Thresholds above.
 
 ## Open Questions
 

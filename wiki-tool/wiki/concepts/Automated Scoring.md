@@ -1,6 +1,8 @@
 ---
 type: concept
-sources: [[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]]
+sources:
+  - "[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]"
+  - "[[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]"
 created: "2026-04-16"
 updated: "2026-04-16"
 status: current
@@ -51,9 +53,17 @@ tags: [automated-scoring, assessment, essay-scoring, simulation]
 > [!analysis] The face-validity argument for constructed-response is independent of psychometric gain.
 > The paper notes constructed-response items sometimes add no construct coverage beyond multiple choice but are retained because stakeholders view them as more authentic. Automated scoring amplifies the economics of keeping these items: even when the unique construct contribution is weak, scoring cost was the binding constraint, and automation relaxes it.
 
+## Practice-standards layer
+
+> [!source] Wood et al. (2021) codify 10 standards of best practice for AS professionals.
+> The ACT Research Technical Brief by Wood, Yao, Haisfield, and Lottridge (2021) aggregates 16 sources (professional-organization standards, AS evaluation frameworks, large-scale program results, and one ML-evaluation reference) into 10 named standards covering accuracy, transparency and construct coverage, fairness, convergent/discriminant validity, context-appropriate implementation, process monitoring, input quality, impact, alert papers, and recalibration. [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]] See [[Automated Scoring Standards of Best Practice]].
+
+> [!analysis] Williamson provides the validity framework; Wood provides the operations checklist.
+> Williamson, Xi, & Breyer (2012) structures AS evaluation around five Kane-style validity inferences. Wood et al. (2021) reorganize AS best practice into ten operational standards that largely map onto Williamson's framework but add practice-level requirements (process monitoring, input quality, alert papers, recalibration) that Williamson touches only in passing. See [[Williamson 2012 vs Wood 2021 - Automated Scoring Standards]].
+
 ## Connections
 
-- Master concept for [[Automated Scoring Evaluation Framework]], [[Human-Automated Score Agreement]], [[Construct Representation in Automated Scoring]], [[Automated Scoring Implementation Models]].
+- Master concept for [[Automated Scoring Evaluation Framework]], [[Human-Automated Score Agreement]], [[Construct Representation in Automated Scoring]], [[Automated Scoring Implementation Models]], [[Automated Scoring Standards of Best Practice]].
 - Realized at ETS by [[e-rater]]; also realized by IEA, PEG, and IntelliMetric.
 - Evaluated under [[Argument-Based Validity]].
 

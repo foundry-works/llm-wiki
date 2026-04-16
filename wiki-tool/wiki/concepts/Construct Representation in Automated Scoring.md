@@ -1,6 +1,8 @@
 ---
 type: concept
-sources: [[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]]
+sources:
+  - "[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]"
+  - "[[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]"
 created: "2026-04-16"
 updated: "2026-04-16"
 status: current
@@ -53,11 +55,42 @@ tags: [automated-scoring, construct, validity, nlp, e-rater]
 > [!analysis] Unconstrained tasks favor feature-engineered engines.
 > The result that e-rater performs better on unconstrained GRE Issue than on constrained GRE Argument is readable two ways. Either unconstrained tasks produce more diverse prose, which feature-engineered surface statistics capture well, or constrained tasks require understanding a specific source text, which e-rater cannot do. Both readings point to content understanding as the gap.
 
+## Corroboration from Wood et al. (2021)
+
+> [!source] Wood's Standard 2 couples transparency and construct coverage into a single standard.
+> "AS engines and procedures should be transparently described such that stakeholders understand how they operate and whether they satisfy construct coverage... Transparency about what response features are used in AS is another frequently cited standard. This information is crucial to determine if an AS engine can properly score responses to items designed to elicit evidence of a certain construct (International Test Commission, 2006). Construct coverage is the ability of an AS engine's candidate feature set to reflect the construct being assessed." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] Wood re-cites the word-count cautionary example.
+> "For example, in essay scoring, an AS score that primarily depends on word count for scoring would be called into question given this standard (Williamson et al., 2010). Word count does not have a meaningful relationship to the quality of writing or knowledge of content and therefore should not be utilized as the sole determinant of an AS score." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] Wood extends construct coverage to documentation of AS/human scoring integration.
+> "Transparency in AS goes beyond the candidate feature set used for training the engine. Where possible, all aspects of human and automated scoring should be documented and made available to stakeholders." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+**Table 1.** Wood's Standard 2 enumerates five items that should be documented for stakeholders; the enumeration is reproduced verbatim below, with the order Wood uses.
+
+| # | Item to document |
+|---|---|
+| 1 | How the data were collected for engine training |
+| 2 | How human raters produced scores for the training sample |
+| 3 | How the engine was trained |
+| 4 | How accurate the scoring models are |
+| 5 | How AS and human scoring will be used together for operational scoring |
+
+> [!source] Wood names two item-type suitability extremes.
+> "Some item types are better suited for automated scoring than others. For example, portfolio assessment and items involving hand-drawn input would be challenging to score accurately via AS. If an assessment program uses AS for a unique item type, AS professionals should be transparent about why AS was chosen as a scoring method, including evidence that AS scores a unique item type accurately." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] Mixed paper-and-online administration requires comparability documentation.
+> "If both paper and online tests are administered, comparability studies should make it clear when AS will be used. If human scoring will be used for paper testing and AS for online tests, comparability studies are necessary to show that one format will not produce biased scores relative to the other." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!analysis] Wood bundles transparency with construct coverage; Williamson keeps them separate.
+> Williamson's framework treats construct representation as a distinct first-area check and deals with transparency implicitly through the overall validity argument. Wood consolidates them into Standard 2, which foregrounds stakeholder access to engine documentation alongside the construct-fit question. The bundling makes transparency operationally testable (is the documentation available? in what form?) in a way that Williamson's framing does not.
+
 ## Connections
 
 - First area of [[Automated Scoring Evaluation Framework]], mapped to Kane's Explanation inference under [[Argument-Based Validity]].
 - Directly shapes [[e-rater]]'s feature design and deployment.
 - Operational constraints on construct fit feed into [[Automated Scoring Implementation Models]] (Model 5 requires tighter fit).
+- Corroborated by Standard 2 of [[Automated Scoring Standards of Best Practice]].
 
 ## Open Questions
 

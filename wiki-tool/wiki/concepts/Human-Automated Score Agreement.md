@@ -1,6 +1,8 @@
 ---
 type: concept
-sources: [[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]]
+sources:
+  - "[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]"
+  - "[[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]"
 created: "2026-04-16"
 updated: "2026-04-16"
 status: current
@@ -29,6 +31,32 @@ tags: [automated-scoring, agreement, validity, reliability]
 The source treats QWK and Pearson as two expressions of a single agreement criterion, not as two independent conjunctive gates. Both are reported (kappa on rounded e-rater values, correlation on unrounded), but the underlying threshold and its rationale are the same.
 
 See [[Quadratic-Weighted Kappa]] and [[Standardized Mean Score Difference]] for the statistics themselves.
+
+## Extensions from Wood et al. (2021)
+
+Wood, Yao, Haisfield, and Lottridge (2021) codify Standard 1 of their 10-standard taxonomy around the same conjunctive-bundle idea and add two further accuracy metrics. Wood frames the full bundle as a mix of absolute and relative thresholds (see [[Absolute vs Relative Thresholds in Automated Scoring]]).
+
+**Table 2.** Accuracy metrics Wood et al. add on top of the ETS/Williamson bundle in Table 1 above.
+
+| Metric | Threshold | Primary reference (as cited by Wood) | Page |
+|---|---|---|---|
+| Standard deviation ratio | 2/3 <= SD_H/SD_AS <= 1.50 | Wang & von Davier (2014) | [[Standard Deviation Ratio]] |
+| Difference between human-human and human-AS exact agreement rates | EA_H,H - EA_H,AS <= 5.125% | McGraw-Hill Education CTB (2014); Pearson & ETS (2015) | [[Exact Agreement Rate Difference]] |
+
+> [!source] Wood imports the SD ratio threshold from Wang & von Davier (2014).
+> Wood's Table 2 lists "2/3 <= (SD_Human / SD_AS) <= 1.50" with reference "Wang & von Davier (2014)." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] Wood imports the exact-agreement-rate difference threshold from CTB and Pearson/ETS.
+> Wood's Table 2 lists "EA_Human,Human - EA_Human,AS <= 5.125%" with reference "McGraw-Hill Education CTB (2014); Pearson & ETS (2014)." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] CTB's operational monitoring flags a 5.0-percentage-point drop in exact agreement.
+> "CTB also monitors engine performance for a notable reduction (greater than 0.05 difference) in perfect agreement rates between the human-human and engine-human scores" (McGraw-Hill Education CTB 2014, p. 15, as quoted in Wood et al.). The 5.0-percentage-point CTB operational trigger is close to but distinct from the 5.125% Table 2 threshold. [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] CTB tightens the overall SMD flag to 0.12 in absolute value.
+> "Because the larger the population SMD value the more likely the subpopulation SMD value will be flagged, CTB reduced the amount of SMD separation tolerated by flagging the population SMD if it exceeds .12 in absolute value" (McGraw-Hill Education CTB 2014, p. 15, as quoted in Wood et al.). This is stricter than Williamson's 0.15 overall. [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!analysis] Wood adds two failure modes QWK and SMD do not cover.
+> The SD ratio detects score-distribution compression or inflation that QWK tolerates (both raters can agree at high rates while the engine under-uses the top and bottom of the scale). The exact-agreement-rate difference catches the "adjacent-score loophole" where QWK stays high because squared-error weighting forgives 1-point misses, even though exact agreement collapses. Together with Williamson's QWK and SMD, Wood's imports make the conjunctive bundle more sensitive to distribution-shape pathologies. See [[Standard Deviation Ratio]] and [[Exact Agreement Rate Difference]].
 
 > [!source] All checks are conjunctive.
 > "At ETS these criteria are conjunctive, with any area of performance not meeting these criteria being flagged as a substantive concern." [[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]
@@ -83,6 +111,7 @@ See [[GRE vs TOEFL e-rater Implementation]] for the full contrast.
 ## Contradictions & Tensions
 
 - Human-human agreement is simultaneously the ceiling for automated agreement (degradation rule) and a flawed benchmark (halo effects, fatigue, consistency drift). The paper resolves this by using humans as the training target and agreement floor, while adding a separate independent-measures check as a sanity check.
+- **CTB 0.12 vs. Williamson 0.15 overall SMD flag.** Wood et al. (2021) surface CTB's tightened 0.12 threshold alongside the Williamson 0.15 value in Table 2, without adjudicating between them. See [[Standardized Mean Score Difference]].
 
 ## Open Questions
 

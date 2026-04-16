@@ -1,6 +1,8 @@
 ---
 type: concept
-sources: [[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]]
+sources:
+  - "[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]"
+  - "[[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]"
 created: "2026-04-16"
 updated: "2026-04-16"
 status: current
@@ -43,12 +45,21 @@ tags: [statistics, agreement, kappa, reliability, automated-scoring]
 > [!analysis] QWK's penalty structure matches how graders and test-takers care about errors.
 > Squared-error weighting means a 1-point disagreement contributes 1/9 the penalty of a 3-point disagreement on a 6-point scale. That matches the intuition that a 4-vs-5 mix is close to agreement while a 2-vs-5 mix is not. Exact-agreement percentages lack that gradient and conflate small and large disagreements.
 
+## Corroboration from Wood et al. (2021)
+
+> [!source] Wood codifies both the 0.70 absolute floor and the 0.10 degradation bound.
+> Wood's Table 2 lists "QWK_Human,AS >= 0.70" and "QWK_Human,Human - QWK_Human,AS <= 0.10" as two separate rows, both attributed to Williamson, Xi, & Breyer (2012). Wood preserves the distinction between an absolute floor and a relative degradation bound, and does not collapse them. [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!analysis] Wood's two-row treatment supports keeping QWK floor and QWK degradation as separate checks.
+> Wood's Table 2 lists the 0.70 absolute floor (absolute threshold) and the 0.10 degradation bound (relative threshold) on different rows with identical references. This confirms the wiki's treatment of the two as separate conjunctive checks rather than a single criterion, consistent with [[Absolute vs Relative Thresholds in Automated Scoring]].
+
 ## Connections
 
 - Central flagging statistic within [[Human-Automated Score Agreement]].
 - Paired with [[Standardized Mean Score Difference]] as the other conjunctive flagging rule.
 - Feeds the [[Automated Scoring Evaluation Framework]]'s Evaluation area (mapped to [[Argument-Based Validity]]).
 - Applied to [[e-rater]] in production at [[Educational Testing Service]].
+- Codified in [[Automated Scoring Standards of Best Practice]] Standard 1 as the QWK absolute floor and the relative degradation bound.
 
 ## Open Questions
 

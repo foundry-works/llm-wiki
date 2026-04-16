@@ -1,6 +1,8 @@
 ---
 type: concept
-sources: [[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]]
+sources:
+  - "[[Williamson Xi Breyer 2012 - Framework for Automated Scoring]]"
+  - "[[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]"
 created: "2026-04-16"
 updated: "2026-04-16"
 status: current
@@ -59,12 +61,38 @@ tags: [automated-scoring, implementation, deployment, validity]
 > [!analysis] Model choice is partly a stakeholder-psychology decision.
 > "Receptivity of the population of score users" is listed as a selection factor alongside empirical evidence. Two programs using the same engine with similar empirical evidence can land on different models because their score users (admissions committees, licensing boards) trust automated scoring differently. See [[GRE vs TOEFL e-rater Implementation]].
 
+## Recited by Wood (2021) as a standard
+
+> [!source] Wood's Standard 5 re-cites Williamson's five-model ordering.
+> Wood's exemplar citations under Standard 5 quote Williamson, Xi, & Breyer (2012, p. 5) at length: "A rough ordering (from more conservative to more liberal use) of implementations for use of automated scoring is as follows: ...Automated quality control of human scoring... Automated and human scoring... Automated scoring alone. Reporting scores solely from the automated system. This is the most liberal use of automated scoring." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] Wood ties implementation choice to stakes, item type, and AS-human integration.
+> "When implementing AS, consideration must be given to contextual factors such as the stakes associated with test performance, item types, and scoring approaches that integrate human and AS" (Wood et al. 2021, Standard 5). "Whereas AS may be used as the sole scoring mechanism for low-stakes tests or feedback tools, it may be more appropriate to integrate AS and human scoring for high-stakes assessments — perhaps using a resolution score if the human score and AS differ substantially." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+> [!source] McGraw-Hill CTB categorizes read/read-behind scenarios by three axes.
+> Wood's Standard 5 quotes McGraw-Hill Education CTB (2014, p. 40) on an orthogonal categorization of human-plus-AS scoring designs: "[R]ead and read behind scenarios ... can be categorized based on 1. The number of raters (one or two), 2. the type of the first and second rater (human or Automated Scoring system), and 3. the adjudication rule which determines when scores from the first and second rater need to be adjudicated by the third rater: a. adjudicated when the scores of the first and second rater disagree (non-exact) b. adjudicate when the scores of the first and second rater differ by more than 1 score point (non-adjacent)." [[Wood Yao Haisfield Lottridge 2021 - Standards of Best Practice in Automated Scoring]]
+
+**Table 2.** CTB's three-axis read/read-behind categorization (as cited in Wood 2021, Standard 5).
+
+| Axis | Options |
+|---|---|
+| Number of raters | One, Two |
+| Type of first and second rater | Human, AS system |
+| Adjudication rule | Non-exact (scores disagree) triggers third rater; non-adjacent (differ by >1 score point) triggers third rater |
+
+> [!analysis] CTB's three-axis view is orthogonal to Williamson's ladder.
+> Williamson's five-model ordering is a one-dimensional liberalization scale. CTB's three axes (raters, types, adjudication rule) factor a narrower design space — the common Model 2 and Model 3 regions of the ladder — into sixteen combinations. The two views are complementary: the ladder answers "how liberal is the deployment?" and the CTB decomposition answers "within a given ladder position, what's the exact adjudication regime?"
+
+> [!analysis] Wood corroborates without altering Williamson's ladder.
+> The five-model ordering is reproduced intact. Wood's contribution is elevating the ordering from a framework component to a named standard and adding cross-citations (Shermis et al. 2016; Yang et al. 2002; McGraw-Hill Education CTB 2014) that anchor each position on the ladder to separate exemplar literature.
+
 ## Connections
 
 - Defines the deployment dimension of the [[Automated Scoring Evaluation Framework]].
 - Interacts directly with [[Human-Automated Score Agreement]] (adjudication thresholds differ by model).
 - Instantiated by [[e-rater]] in Models 2 and 3; by IEA in Model 5 at PTE.
 - Program-level contrast captured in [[GRE vs TOEFL e-rater Implementation]].
+- Standard 5 of [[Automated Scoring Standards of Best Practice]].
 
 ## Open Questions
 
