@@ -332,23 +332,28 @@ Same pattern as Phase 2.
 
 ## Phase 4: Iteration & Refinement
 
-**Goal:** Stress-test with more sources. Build real cross-references. Refine the schema.
+**Goal:** Exercise the remaining scaffold patterns — cross-referencing across ingests, contradiction surfacing, source update / hash drift, and schema co-evolution — using throwaway content. Refine the scaffold.
 
-**Note:** A partially-built wiki can underperform no wiki at all — incomplete cross-references and partial synthesis can mislead rather than help. Until the wiki has 8-10+ sources with overlapping topics, treat wiki answers as starting points, not authoritative. Cross-references and synthesis only become reliable when multiple sources cover the same entities and concepts. This phase is where the wiki crosses that threshold.
+**Scope note:** Phases 2-4 validate the scaffold; they do not build a real wiki. A real wiki is a separate project that starts with a populated `purpose.md` and accumulates many sources over time. This phase uses whatever throwaway content exercises the remaining scaffold behaviors and no more.
 
 **Depends on:** Phases 2-3
 
-### 4.1 Ingest 3-5 More Sources
+### 4.1 Exercise Cross-Reference and Contradiction Patterns
 
-Choose sources that overlap (shared entities/concepts) to test cross-referencing. Include at least one source that contradicts or updates a claim from an earlier source.
+Ingest 2-3 additional throwaway sources chosen to exercise scaffold behaviors not yet tested:
+- At least one source overlapping in entities/concepts with the Phase 2 source, to test cross-referencing and page-update (not page-duplication) behavior.
+- At least one source that contradicts a claim from an earlier source, to test contradiction surfacing (no smoothing).
 
-After each ingest, review:
+After each ingest, verify the scaffold behaviors:
 - Cross-references created correctly?
 - Existing pages updated (not duplicated)?
 - Contradictions surfaced (not smoothed)?
 - Index staying clean?
 - Synthesis evolving meaningfully?
 - Log accumulating?
+- Auditor catching gaps/attribution errors the extractor missed?
+
+The specific content of the sources doesn't matter. What's being validated is the scaffold's ability to handle cross-ingest state.
 
 ### 4.2 Test Source Update (Staleness)
 
@@ -421,13 +426,14 @@ Phases 0-1 (Init) are domain-agnostic and repeatable. First real content appears
 
 ## Success Criteria
 
-The implementation is complete when:
+The scaffold is complete when:
 
-1. All 10 deliverable files exist and are committed to git
-2. A source has been ingested end-to-end with correct claim typing and provenance
-3. A query has been answered using wiki content with proper citations
-4. A lint pass has run all checks (structural, schema, source drift, bare-claim, claim-audit sampling, conceptual) and produced a report
-5. The wiki has 4+ sources ingested with cross-referenced entity and concept pages
-6. `wiki/log.md` has entries for ingests, queries, and lint
-7. `wiki/synthesis.md` has been updated across multiple ingests
-8. CLAUDE.md "Wiki Conventions" section has entries from real use
+1. All 10 scaffold deliverable files plus the three Claude Code skill files exist and are committed to git
+2. An end-to-end ingest produces correct claim typing, provenance, and an independent audit report
+3. A query against the wiki produces proper citations and dual output (answer plus wiki side effects)
+4. A lint pass runs all checks (structural, schema, source drift, bare-claim, claim-audit sampling, conceptual) and produces a categorized report without applying fixes
+5. Cross-reference and contradiction behaviors are exercised across at least 2 overlapping throwaway ingests
+6. Source-update (hash drift) and hash-match audit-only paths are both exercised
+7. The `Wiki Conventions` section in CLAUDE.md has entries drawn from real scaffold use (not speculative)
+
+Any specific wiki built on this scaffold is a downstream project; the scaffold is done when the above is met regardless of wiki content.

@@ -197,6 +197,16 @@ the wiki — creating new pages and revising existing ones as needed.
 Track provenance. Surface contradictions. Update the index, synthesis,
 and log when done. Commit via git.
 
+The `/wiki-ingest` skill (in `.claude/skills/wiki-ingest/`) operationalizes
+this workflow with two subagents: `wiki-extractor` writes the pages, and
+`wiki-auditor` independently reads the source against the resulting pages
+and reports extraction gaps. The auditor's gap report is appended to the
+source-summary as a `[!gap] Extraction coverage` callout. The same skill
+runs an audit-only mode (`/wiki-ingest --audit-only <source>`, or
+automatically when re-ingesting an unchanged source) that skips
+extraction. Use the skill for substantive sources (papers, chapters); for
+trivial sources, doing the ingest inline is fine.
+
 If the source is a PDF, convert it to markdown first using `pymupdf4llm`.
 Store the converted `.md` alongside the original in `raw/`. The source
 summary's `raw_path` points to the original file; ingest from the
@@ -284,4 +294,55 @@ is implicitly `[!analysis]`.
 
 <!-- Maintained by the agent. Add learned patterns, domain-specific
      conventions, corrections from the human, and workflow refinements.
-     Format: date, convention, context. -->
+     State each convention as a present-tense rule; git history tracks
+     when it was adopted. -->
+
+### Reconstructed figures go in [!unverified]
+
+When PDF→markdown conversion drops a formula or figure (pymupdf4llm
+produces `==> picture [N x N] intentionally omitted <==`), any
+reconstruction MUST be `[!unverified]`, not `[!source]`. The source
+figure is authoritative; absent it, we don't know the formula.
+
+### Preserve superlative scoping clauses
+
+When the source scopes a superlative ("first among these," "the most
+widely-known of these systems"), extraction MUST preserve the scoping
+clause. Do not paraphrase "first among these [four named essay
+engines]" to "first automated scorer in high-stakes testing."
+
+### One criterion with multiple statistics is one row
+
+When a source reports one acceptance criterion via multiple statistics
+(e.g., quadratic-weighted kappa and Pearson correlation both at the
+same 0.70 threshold on the same rationale), represent it as one
+criterion with multiple expressions, not as N conjunctive gates.
+Unless the source explicitly separates them as independent checks.
+
+### Don't flatten enumerated structures
+
+When the source enumerates N items (e.g., four subgroup fairness
+checks, five implementation models, three sub-checks), extraction MUST
+preserve all N. Representing one as exemplar and dropping the others
+narrows the wiki's grasp of the source.
+
+### Author filenames: Title Case, no periods in initials
+
+Author entity pages use the form `David M Williamson.md`, not
+`David M. Williamson.md`. Consistent with the "No special characters
+beyond spaces and hyphens" page-naming rule. Wikilinks follow the
+filename exactly.
+
+### Frontmatter lists use YAML block form
+
+Populated multi-entry frontmatter fields (`sources`, `tags`,
+`subjects`) use block form, one entry per line:
+
+```yaml
+sources:
+  - "[[Page Name]]"
+  - "[[Other Page]]"
+```
+
+Not bare-bracket form (`sources: [[[A]]]`), which parses ambiguously.
+Empty lists stay flow (`sources: []`) — that matches the templates.

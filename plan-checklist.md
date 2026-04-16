@@ -105,13 +105,15 @@ All paths below are under `wiki-tool/` (the vault root for this build).
 
 ## Phase 4: Iteration & Refinement
 
-- [ ] **4.1** Additional sources ingested (target: 3-5):
-  - [ ] Source 2 ingested and reviewed
-  - [ ] Source 3 ingested and reviewed
-  - [ ] Source 4 ingested and reviewed
+Scaffold validation only — throwaway content used to exercise remaining scaffold behaviors. Building a real wiki is a downstream project.
+
+- [ ] **4.1** Cross-reference and contradiction patterns exercised (2-3 throwaway ingests):
+  - [ ] Ingest 2 (overlapping entities/concepts with Phase 2 source)
+  - [ ] Ingest 3 (contradicts a prior claim)
   - [ ] Cross-references correct, existing pages updated not duplicated
-  - [ ] Contradictions surfaced
+  - [ ] Contradictions surfaced (not smoothed)
   - [ ] Index clean, log accumulating, synthesis evolving
+  - [ ] Auditor catches gaps/attribution errors on each ingest
 - [ ] **4.2** Source update tested:
   - [ ] Raw source modified
   - [ ] Agent detects change via `raw_hash` comparison
@@ -129,7 +131,9 @@ All paths below are under `wiki-tool/` (the vault root for this build).
 
 ## Completion Criteria
 
-- [ ] All 10 deliverables committed:
+The scaffold is complete when the items below are checked. A real wiki built on top of the scaffold is a separate project and is not part of completion.
+
+- [ ] All 10 scaffold deliverables committed:
   - [ ] `CLAUDE.md`
   - [ ] `purpose.md`
   - [ ] `writing-style.md`
@@ -140,10 +144,15 @@ All paths below are under `wiki-tool/` (the vault root for this build).
   - [ ] `wiki/index.md`
   - [ ] `wiki/log.md`
   - [ ] `wiki/synthesis.md`
-- [ ] End-to-end ingest with correct claim typing and provenance
+- [ ] Claude Code skills committed (added during Phase 2 reflection):
+  - [ ] `.claude/agents/wiki-extractor.md`
+  - [ ] `.claude/agents/wiki-auditor.md`
+  - [ ] `.claude/skills/wiki-ingest/SKILL.md` (full ingest + audit-only mode)
+- [ ] End-to-end ingest with correct claim typing, provenance, and independent audit report
 - [ ] Query with citations and dual output
-- [ ] Lint with structural + conceptual checks
-- [ ] 4+ sources ingested with cross-referenced pages
+- [ ] Lint with structural + conceptual checks (produces report; applies no fixes without approval)
+- [ ] Cross-reference and contradiction behaviors exercised across at least 2 overlapping throwaway ingests
+- [ ] Source-update (hash drift) and hash-match audit-only paths both exercised
 - [ ] Log has entries for ingests, queries, and lint
 - [ ] Synthesis updated across multiple ingests
 - [ ] CLAUDE.md Wiki Conventions has entries from real use
