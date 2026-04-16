@@ -59,21 +59,23 @@ All paths below are under `wiki-tool/` (the vault root for this build).
 
 ## Phase 2: First Ingest
 
-- [ ] **2.1** Real source added to `raw/`
-- [ ] **2.2** Ingest run via Claude Code
-- [ ] **2.3** Results verified:
-  - [ ] Source summary page in `wiki/sources/` with correct frontmatter (including `raw_hash`) and TLDR
-  - [ ] Entity pages in `wiki/entities/` (no duplicates, Title Case naming)
-  - [ ] Concept pages in `wiki/concepts/` (no duplicates, Title Case naming)
-  - [ ] All claims properly typed (source callouts have links, analysis shows reasoning, multi-source claims cite all sources)
-  - [ ] Agent read `purpose.md` during ingest (if populated)
-  - [ ] `wiki/index.md` updated
-  - [ ] `wiki/log.md` entry appended
-  - [ ] `wiki/synthesis.md` updated
-- [ ] Every created/updated page reviewed (not just spot-checked)
-- [ ] Corrections filed to Wiki Conventions
-- [ ] **2.4** Issues recorded in CLAUDE.md Wiki Conventions
-- [ ] **2.5** Committed to git
+Smoke-tested against Williamson, Xi, & Breyer 2012 on the `smoke-test` branch. Content is throwaway and not merged to main; the scaffold edits it produced were merged.
+
+- [x] **2.1** Real source added to `raw/` (williamson2012.pdf)
+- [x] **2.2** Ingest run via Claude Code (`/wiki-ingest` end-to-end: convert, hash, pre-check, extract, audit, append gap callout)
+- [x] **2.3** Results verified:
+  - [x] Source summary page in `wiki/sources/` with correct frontmatter (including `raw_hash`) and TLDR
+  - [x] Entity pages in `wiki/entities/` (no duplicates, Title Case naming)
+  - [x] Concept pages in `wiki/concepts/` (no duplicates, Title Case naming)
+  - [x] All claims properly typed (auditor caught 4 attribution errors — fixed post-audit)
+  - [x] Agent read `purpose.md` during ingest (recognized as unpopulated template; no false steering)
+  - [x] `wiki/index.md` updated
+  - [x] `wiki/log.md` entry appended
+  - [x] `wiki/synthesis.md` updated
+- [x] Every created/updated page reviewed (via independent auditor — caught attribution errors and coverage gaps the extractor missed)
+- [x] Corrections filed to Wiki Conventions (six rules; see CLAUDE.md)
+- [x] **2.4** Issues recorded in CLAUDE.md Wiki Conventions
+- [x] **2.5** Committed to git (scaffold → main; smoke-test content preserved on `smoke-test` branch only)
 
 ---
 
@@ -133,26 +135,26 @@ Scaffold validation only — throwaway content used to exercise remaining scaffo
 
 The scaffold is complete when the items below are checked. A real wiki built on top of the scaffold is a separate project and is not part of completion.
 
-- [ ] All 10 scaffold deliverables committed:
-  - [ ] `CLAUDE.md`
-  - [ ] `purpose.md`
-  - [ ] `writing-style.md`
-  - [ ] `templates/entity.md`
-  - [ ] `templates/concept.md`
-  - [ ] `templates/source-summary.md`
-  - [ ] `templates/comparison.md`
-  - [ ] `wiki/index.md`
-  - [ ] `wiki/log.md`
-  - [ ] `wiki/synthesis.md`
-- [ ] Claude Code skills committed (added during Phase 2 reflection):
-  - [ ] `.claude/agents/wiki-extractor.md`
-  - [ ] `.claude/agents/wiki-auditor.md`
-  - [ ] `.claude/skills/wiki-ingest/SKILL.md` (full ingest + audit-only mode)
-- [ ] End-to-end ingest with correct claim typing, provenance, and independent audit report
+- [x] All 10 scaffold deliverables committed:
+  - [x] `CLAUDE.md`
+  - [x] `purpose.md`
+  - [x] `writing-style.md`
+  - [x] `templates/entity.md`
+  - [x] `templates/concept.md`
+  - [x] `templates/source-summary.md`
+  - [x] `templates/comparison.md`
+  - [x] `wiki/index.md`
+  - [x] `wiki/log.md`
+  - [x] `wiki/synthesis.md`
+- [x] Claude Code skills committed (added during Phase 2 reflection):
+  - [x] `.claude/agents/wiki-extractor.md`
+  - [x] `.claude/agents/wiki-auditor.md`
+  - [x] `.claude/skills/wiki-ingest/SKILL.md` (full ingest + audit-only mode)
+- [x] End-to-end ingest with correct claim typing, provenance, and independent audit report
 - [ ] Query with citations and dual output
 - [ ] Lint with structural + conceptual checks (produces report; applies no fixes without approval)
 - [ ] Cross-reference and contradiction behaviors exercised across at least 2 overlapping throwaway ingests
 - [ ] Source-update (hash drift) and hash-match audit-only paths both exercised
 - [ ] Log has entries for ingests, queries, and lint
 - [ ] Synthesis updated across multiple ingests
-- [ ] CLAUDE.md Wiki Conventions has entries from real use
+- [x] CLAUDE.md Wiki Conventions has entries from real use
