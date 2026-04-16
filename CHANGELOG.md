@@ -1,5 +1,38 @@
 # Changelog
 
+## 2026-04-16 — Revision 10
+
+Research-driven additions to the proposal and plan. 29 related projects surveyed in `research/` informed these changes.
+
+### Added
+
+- **Research corpus.** 29 notes in `research/` covering related LLM-wiki / knowledge-base projects (Karpathy's gist, Obsidian-CLI-based wikis, MCP-Obsidian integrations, semantic graph tools, compiler-analogy framings, etc.). Each note captures the project's approach, what's worth borrowing, and what diverges from this proposal. (`research/01-*` through `research/29-*`)
+- **`purpose.md` (human-owned research direction).** New vault-root file scaffolded during Init. Holds the human's goal, key questions, scope, and working thesis. The LLM reads it for context during ingest and query but never modifies it. Steers what the agent emphasizes. (`implementation-proposal.md`, `plan.md`, `plan-checklist.md`)
+- **`writing-style.md` (separate reference file).** Full writing-style reference extracted to its own vault-root file with examples and before/after pairs. CLAUDE.md keeps only the operational summary and points here for detail. (`implementation-proposal.md`, `plan.md`, `plan-checklist.md`)
+- **Writing Style Reference section in the proposal.** Full content of `writing-style.md` documented in the proposal: funnel structure, plain language, short sentences, no hedging stacks, emdash limits, acronym rules, figure/table leads, threshold anchoring, explicit assumptions, number formatting, comparison/synthesis guidance. (`implementation-proposal.md`)
+- **`raw_hash` frontmatter on source-summary pages.** SHA256 of the raw source file, captured at ingest time. Enables source-drift detection during lint and skip-on-unchanged during re-ingest. (`implementation-proposal.md`, `plan.md`, `plan-checklist.md`)
+- **Multi-source citations.** `[!source]` callouts can cite multiple sources when they corroborate the same claim: `> [!source] Claim text. [[Source A]], [[Source B]]`. Makes corroboration visible at the claim level. (`implementation-proposal.md`)
+- **Source count in index entries.** `wiki/index.md` format updated to include a parenthetical source count per entry: `- [[Page Name]] (3) — One-line TLDR.` The number is `len(sources)` from frontmatter. Lint checks consistency. (`implementation-proposal.md`)
+- **Ingest pre-check step.** Before writing pages, the agent presents key takeaways, planned new pages, existing pages that will be updated, and potential contradictions. Human approves before the write phase. Skipped in batch mode. (`implementation-proposal.md`, `plan.md`)
+- **Expanded Lint checks.**
+  - **Schema checks:** frontmatter completeness per `type`, ISO 8601 dates, YAML-list fields, TLDR-position enforcement, Title Case filenames, full index consistency (membership, resolution, source counts, TLDRs).
+  - **Source drift:** recompute `raw_hash` for each source-summary against its `raw_path`; flag mismatches.
+  - **Bare-claim heuristic:** report prose claims outside typed callouts as candidates; `synthesis.md` exempt.
+  - **Claim-audit sampling:** 2-3 `[!source]` claims per pass traced back to cited sources; audited references logged for rotation.
+  - **Specific conceptual review:** thinly-sourced pages, pages lacking `[!analysis]`, stale hubs (5+ backlinks, >30d old), unanswered gaps, missing cross-links between co-occurring entities — not generic suggestions.
+  (`implementation-proposal.md`, `plan.md`, `plan-checklist.md`)
+- **CLI-vs-direct approach tables per operation.** Each operation (Init, Ingest, Query, Lint) now documents both the Obsidian CLI approach and the direct alternative (grep, file I/O, wikilink parsing) for every tool. Phase 1.4 tests both and records which works best. Replaces the prior "fallback" framing. (`implementation-proposal.md`, `plan.md`)
+- **Init operation tool table.** Init gets its own tool table covering page creation, search, orphans, backlinks, outgoing links. (`implementation-proposal.md`)
+
+### Changed
+
+- **Phase 1.4 reframed.** "Test Template Creation via CLI" → "Test CLI and Direct Approaches." Tests both paths for each operation rather than assuming CLI primary with fallback secondary. (`plan.md`, `plan-checklist.md`)
+- **Phase 1.2 scope expanded.** Wiki scaffolds step now includes human-owned files: scaffolds `purpose.md` at vault root and writes `writing-style.md` from the proposal's reference section. (`plan.md`, `plan-checklist.md`)
+- **Phase 1.5 CLAUDE.md contents expanded.** Guidance section now includes Writing Style subsection (operational rules + pointer to `writing-style.md`); Vault Layout, Ingest, and Query sections reference `purpose.md`. (`plan.md`, `plan-checklist.md`)
+- **Deliverables count: 8 → 10.** Adds `purpose.md` and `writing-style.md`. (`plan.md`, `plan-checklist.md`)
+- **`raw/` description updated.** Reflects that the LLM may write converted `.md` files derived from non-markdown sources (the one documented exception to raw/ immutability). (`implementation-proposal.md`)
+- **Lint report format.** New categories in the summary: schema violations, source drift, bare-claim candidates, audit findings. Every lint pass appends a log entry including audited claim references so future passes can rotate. (`implementation-proposal.md`, `plan.md`)
+
 ## 2026-04-15 — Revision 9
 
 Writing style review of PHILOSOPHY.md and README.md against the writing style guide.
