@@ -12,6 +12,7 @@ A concrete implementation of the LLM Wiki pattern as a Claude Code skill backed 
 4. **Epistemic integrity over convenience.** Every wiki claim is typed (Source, Analysis, Unverified, Gap). Provenance is tracked via source links in frontmatter. The system knows what it doesn't know.
 5. **Human as editor-in-chief.** The LLM writes; the human directs, reviews, and corrects. The schema is a living document the agent co-maintains based on experience.
 6. **Complexity is added only when earned.** Start with conventions and the LLM's native capabilities. Add infrastructure (scripts, search engines, databases) only when concrete failures demand it.
+7. **The pattern is reusable; each wiki is unique.** The directory structure, templates, data contracts, and operations are domain-agnostic. Spinning up a new wiki means instantiating the same skeleton in a fresh vault. Domain-specific adaptation happens through use (the training period and Wiki Conventions), not through upfront configuration.
 
 ---
 
@@ -21,6 +22,7 @@ A concrete implementation of the LLM Wiki pattern as a Claude Code skill backed 
 - **Obsidian desktop app running** (required for CLI search and graph commands)
 - **Claude Code** with CLAUDE.md loaded
 - **Git** initialized in the vault root
+- **pymupdf4llm** (`pip install pymupdf4llm`) — converts PDFs to markdown for ingestion. PDFs are the primary source format in research workflows; this is a required dependency, not optional.
 
 ---
 
@@ -29,8 +31,9 @@ A concrete implementation of the LLM Wiki pattern as a Claude Code skill backed 
 ```
 vault/
   raw/                          # Layer 1: Immutable source documents
-    assets/                     # Downloaded images, PDFs
+    assets/                     # Downloaded images, attachments
     <source-files>.md           # Clipped articles, papers, notes
+    <source-files>.pdf          # PDFs (converted to .md at ingest time)
   wiki/                         # Layer 2: LLM-generated knowledge base
     index.md                    # Content catalog
     log.md                      # Chronological operation log
@@ -44,16 +47,20 @@ vault/
     concept.md
     source-summary.md
     comparison.md
+  purpose.md                    # Human-owned research direction (read-only for LLM)
+  writing-style.md              # Writing style reference (agent reads for detail)
   CLAUDE.md                     # Layer 3: Schema (specifications + guidance)
 ```
 
 ### Why This Structure
 
-- **`raw/`** is never modified by the LLM. It's the source of truth the human curates.
+- **`raw/`** is never modified by the LLM. It's the source of truth the human curates. Sources may be markdown, PDF, or other formats. Non-markdown sources are converted to markdown at ingest time; both the original and the converted `.md` live in `raw/`.
 - **`wiki/`** is entirely LLM-owned. The human reads it; the LLM writes and maintains it.
 - **`wiki/log.md`** is an append-only chronological record of operations. Parseable with `grep "^### \[" log.md | tail -5`.
 - **`wiki/synthesis.md`** is the evolving high-level synthesis. Updated on every ingest. Readable as a standalone summary.
 - **`templates/`** are Obsidian templates. The LLM uses them as starting points for new pages.
+- **`purpose.md`** is the human's research direction — what they're trying to understand, key questions, scope, and working thesis. The LLM reads it for context but never modifies it. It steers what the agent emphasizes during ingest and query.
+- **`writing-style.md`** is the long-form writing style reference. CLAUDE.md holds the operational summary; this file has examples, before/after pairs, and rationale. The agent consults it when drafting or revising prose on wiki pages.
 - **`CLAUDE.md`** is the schema — loaded automatically by Claude Code. It defines specifications (data contracts) and guidance (principles and goals).
 
 ---
@@ -91,7 +98,7 @@ tags: []
 Additional fields by page type:
 
 - **Entity:** `entity_type: ""` (person, org, tool, place, etc.)
-- **Source summary:** `raw_path: ""` (path to the raw source file)
+- **Source summary:** `raw_path: ""` (path to the raw source file), `raw_hash: ""` (SHA256 of raw source file at ingest time)
 - **Comparison:** `subjects: []` (list of wikilinks to the compared pages)
 
 Field types must be consistent. Dates in ISO 8601. Tags as a YAML list. Sources as a list of wikilinks. Tools depend on these formats.
@@ -113,6 +120,8 @@ Every substantive claim uses one of four Obsidian callout types:
 
 The critical distinction is Source vs. Analysis. If the LLM is paraphrasing, synthesizing, or inferring — even if it feels obvious — it's Analysis, not Source. These callout names are exact — they are grep-parseable and form the basis of lint checks.
 
+When multiple sources support the same claim, cite all of them: `> [!source] Claim text. [[Source A]], [[Source B]], [[Source C]]`. This makes corroboration visible at the claim level.
+
 ### Cross-References
 
 All cross-references use wikilinks (`[[Page Name]]`). Not raw markdown links. The graph, backlink resolution, and orphan detection depend on this.
@@ -123,16 +132,16 @@ Page filenames use Title Case with spaces: `Transformer Architecture.md`, linked
 
 ### Index Format
 
-`wiki/index.md` lists every wiki page organized by category. Each entry: one wikilink and a one-line TLDR.
+`wiki/index.md` lists every wiki page organized by category. Each entry: one wikilink, a parenthetical source count, and a one-line TLDR. The source count is the number of entries in the page's `sources: []` frontmatter list.
 
 ```markdown
 ## Entities
 
-- [[Entity Name]] — One-line TLDR.
+- [[Entity Name]] (3) — One-line TLDR.
 
 ## Concepts
 
-- [[Concept Name]] — One-line TLDR.
+- [[Concept Name]] (2) — One-line TLDR.
 ```
 
 No token budget. Keep entries concise. When the index becomes unwieldy to scan, split into per-category indexes (`wiki/entities/index.md`, etc.).
@@ -240,6 +249,7 @@ tags: []
 ---
 type: source-summary
 raw_path: ""
+raw_hash: ""
 sources: []
 created: "{{date}}"
 updated: "{{date}}"
@@ -308,19 +318,191 @@ Default sections (Overview, Key Claims, Relationships, etc.) adapt to the domain
 
 ---
 
+## Writing Style Reference
+
+`writing-style.md` lives at the vault root. CLAUDE.md holds the operational summary of these rules; this file has the examples and before/after pairs the agent reaches for when prose quality needs attention. Content:
+
+```markdown
+# Writing Style Reference
+
+The agent reads this for detail and examples when drafting or revising
+wiki pages. The short rules in CLAUDE.md are the operational summary;
+this file is the long form.
+
+## Funnel structure
+
+Each document, section, and paragraph flows from broad to narrow: result
+first, then context, then detail. A reader who stops at any point should
+have the most important information so far.
+
+- **Page level:** The `[!tldr]` states the key takeaway. Body expands:
+  context → claims → open questions.
+- **Section level:** Open with the conclusion, then support it.
+- **Paragraph level:** Lead with the point, then explain. Don't make the
+  reader hold details in memory while waiting for the result.
+
+## Plain language
+
+Prefer concrete, everyday words over academic phrasing.
+
+| Instead of | Write |
+|---|---|
+| "derive from" | "come from" |
+| "sufficient" | "enough" |
+| "may require" | "will likely need" |
+| "binding constraint" | "bottleneck" |
+| "utilize" | "use" |
+
+## Short sentences
+
+If a sentence has more than one clause doing real work, split it.
+
+Before:
+> The inference confidence is computed per claim from the model's raw
+> logits, scaled by a temperature parameter, and compared against a
+> tier-specific threshold.
+
+After:
+> Inference confidence is computed per claim from the model's scaled
+> logits. Each value is compared against a tier-specific threshold.
+
+## Avoid hedging stacks
+
+One qualifier is fine. Stacking dilutes the point.
+
+Before: "It should be noted that this might potentially suggest that the
+threshold could possibly be too strict."
+
+After: "This suggests the threshold is too strict."
+
+Be direct about limitations: state them plainly rather than burying them
+in hedged language.
+
+## Avoid overusing emdashes
+
+Emdashes are useful for parenthetical asides, but overuse makes prose
+breathless. Limit to one emdash pair per paragraph. If you reach for a
+second, use a comma, colon, period, or parentheses instead. For numeric
+ranges, use a hyphen (9-10), not an emdash (9—10) or en-dash (9–10).
+
+## Define acronyms on first use per page
+
+Wiki pages are read standalone. Spell out on first mention — "inter-rater
+reliability (IRR)" — then use the acronym within that page.
+
+## Name recurring concepts
+
+When a pattern is referenced across sections or pages, give it a compact
+label on first introduction ("the three-judge panel," "write-once
+semantics"). Later references can use the shorthand without re-explaining.
+
+## Lead in to tables and figures
+
+Don't drop a table or figure cold. Tell the reader what to look for.
+
+> Table 1 shows source counts by entity, ordered by centrality. The
+> rightmost column flags entities with only one cited source.
+
+Caption format: `**Table N.** Description` and `**Figure N.** Description`.
+Descriptions should be specific enough to interpret the table without
+surrounding text.
+
+## Anchor thresholds to their names
+
+Pair a number with its concept on first mention. A bare number has no
+meaning until the reader knows what it belongs to.
+
+Before: "We include only entities with ≥ 3 sources."
+
+After: "We include only entities meeting the corroboration threshold
+(≥ 3 cited sources)."
+
+## State assumptions explicitly
+
+List assumptions up front — in a bullet list — rather than embedding them
+in prose where they're easy to miss. This applies to `[!analysis]`
+callouts and comparison pages especially.
+
+Before:
+> Because sources overlap substantially and use comparable methods, we
+> can pool their estimates.
+
+After:
+> **Assumptions:**
+> - Sources cover overlapping populations.
+> - Methods are comparable enough that estimates can be pooled.
+>
+> Under these assumptions, we pool the estimates…
+
+## Consistent numbers and formatting
+
+- Pick a rounding convention per page. Don't mix "0.7" and "0.70" for
+  the same quantity.
+- Spell out numbers under 10 in prose ("three items") unless grouped
+  with larger numbers ("items 3, 7, and 12").
+- Use commas in thousands (18,000 not 18000).
+- Use hyphens for numeric ranges (0.70-0.80, grades 3-5), not en-dashes
+  or emdashes.
+
+## For comparison and synthesis pages
+
+- **Translate findings into practical implications.** Don't just restate
+  results — say what they mean for the research direction. Each major
+  finding should have a "so what" the reader can act on.
+- **Qualify cross-source comparisons.** When comparing results across
+  sources, note the boundary conditions — different methods, domains, or
+  scope. Don't let a favorable comparison imply more generality than the
+  sources support.
+```
+
+---
+
 ## Operations
 
-The three core operations. Each is described by its **goal** and **principles**, not a rigid step-by-step procedure. The agent exercises judgment about how to accomplish the goal based on the specific source, question, or wiki state.
+Four operations. Init is run once per wiki; the other three are ongoing. Each is described by its **goal** and **principles**, not a rigid step-by-step procedure. The agent exercises judgment about how to accomplish the goal based on the specific source, question, or wiki state.
+
+### Init
+
+**Goal:** Instantiate a new wiki in a fresh Obsidian vault — create the directory structure, templates, scaffolds, and CLAUDE.md so the vault is ready for its first ingest.
+
+**Principles:**
+- Create the full directory structure (`raw/assets/`, `wiki/` subdirectories, `templates/`).
+- Write all four templates (entity, concept, source-summary, comparison) with the standard frontmatter and structure.
+- Create wiki scaffolds: `wiki/index.md` (empty category headers), `wiki/log.md` (empty), `wiki/synthesis.md` (frontmatter + placeholder).
+- Generate `CLAUDE.md` with all specifications, guidance sections, and an empty Wiki Conventions section.
+- Initialize git with a `.gitignore` that excludes Obsidian workspace files.
+- Verify Obsidian CLI availability. Test key commands: template creation, search scoping, graph commands, callout search, link traversal. Document any fallbacks in CLAUDE.md based on test results.
+- Scaffold `purpose.md` at the vault root from template. The human fills it in; the LLM reads it but never writes to it.
+- Write `writing-style.md` at the vault root with the full content from the Writing Style Reference section above. The agent reads it on demand when drafting prose; the human edits it if the conventions need to change.
+- No domain-specific customization needed — the training period and Wiki Conventions handle domain adaptation.
+- Commit the initial scaffold.
+
+**Available tools:**
+
+| Operation | CLI approach | Direct approach |
+|-----------|-------------|-----------------|
+| Create pages | `obsidian create name="..." path=... template=...` | Direct file I/O |
+| Search | `obsidian search query="..." path=wiki` | `grep -ri "..." wiki/` |
+| Find orphans | `obsidian orphans` | Parse files and wikilinks |
+| Find backlinks | `obsidian backlinks file="..."` | `grep -rl "\[\[...\]\]" wiki/` |
+| Find outgoing links | `obsidian links file="..."` | Parse wikilinks from file |
+
+Phase 1.4 tests both approaches for each operation and documents which works best.
+
+Additional: `git` for initialization and initial commit.
 
 ### Ingest
 
 **Goal:** Extract knowledge from a new source and integrate it into the wiki — creating new pages and revising existing ones so the wiki reflects everything it's been fed.
 
 **Principles:**
-- Read the source. Discuss key takeaways with the human (unless batch mode or the human signals to proceed).
+- If the source is a PDF, convert it to markdown first using `pymupdf4llm`. Store the converted `.md` alongside the original in `raw/` (e.g., `raw/paper.pdf` stays immutable, `raw/paper.md` is the derived conversion). The source summary's `raw_path` points to the original PDF; ingest from the converted markdown.
+- Read `purpose.md` (if populated) for context on what the human is trying to learn. Let it steer what to extract, which pages to create, and how to frame content.
+- Read the source. Before writing any pages, present the human with: (1) key takeaways from the source, (2) planned new pages (name and type), (3) existing pages that will be updated and what changes, (4) potential contradictions with existing wiki content. Proceed after human approval. In batch mode or when the human signals to proceed without review, skip the pre-check.
 - Search the wiki for existing relevant pages before creating new ones. Avoid duplicates.
 - Create a source summary page in `wiki/sources/`. Create or update entity and concept pages as warranted by the source content.
 - Every claim extracted from the source is typed: direct extractions are `[!source]` with a link to the source summary page. Inferences are `[!analysis]`. Claims the source makes without evidence are `[!unverified]`. Questions raised but not answered are `[!gap]`.
+- Compute the SHA256 hash of the raw source file (via `shasum -a 256`) and store it in the source summary's `raw_hash` frontmatter field. On re-ingest, compare the current file's hash against the stored `raw_hash`. If unchanged, report "no changes detected" and skip. If changed, proceed with a targeted update.
 - Track provenance: every page created or updated records the source in its frontmatter `sources` list.
 - When new information contradicts existing wiki content, surface the disagreement explicitly. Do not smooth contradictions into false coherence.
 - Update `wiki/index.md` with entries for new pages and revised TLDRs for updated pages.
@@ -330,18 +512,24 @@ The three core operations. Each is described by its **goal** and **principles**,
 - For long sources (books, lengthy reports), ingest chapter by chapter or section by section. Each chunk gets its own source-summary page. This produces better extraction than ingesting a full document at once.
 
 **Available tools:**
-```
-obsidian search query="<terms>" path=wiki       # Find existing pages
-obsidian search:context query="<terms>" path=wiki  # Search with surrounding context
-Direct file read/write for all page creation and editing
-```
+
+| Operation | CLI approach | Direct approach |
+|-----------|-------------|-----------------|
+| Find existing pages | `obsidian search query="<terms>" path=wiki` | `grep -ri "<terms>" wiki/` |
+| Search with context | `obsidian search:context query="<terms>"` | `grep -ri -C 3 "<terms>" wiki/` |
+| Convert PDF | — | `pymupdf4llm` |
+| Compute source hash | — | `shasum -a 256 <file>` |
+| Read/write pages | — | Direct file I/O |
+
+Phase 1.4 determines which approach works best for each operation. The agent uses whichever is more reliable.
 
 ### Query
 
 **Goal:** Answer a question using the wiki's accumulated knowledge. Cite sources. Distinguish what the wiki says from what the LLM infers. Optionally file valuable answers back into the wiki so insights compound.
 
 **Principles:**
-- Read `wiki/index.md` to identify candidate pages. Search for specifics with `obsidian search`.
+- Read `purpose.md` (if populated) to understand the human's research direction and emphasis.
+- Read `wiki/index.md` to identify candidate pages. Search for specifics.
 - Read relevant pages. Follow links via backlinks and outgoing links to discover related content.
 - Synthesize an answer with citations to specific wiki pages. Distinguish sourced claims from inferences.
 - If the answer is valuable (a comparison, a synthesis, a connection), consider filing it as a new page in the appropriate wiki directory. This is how explorations compound.
@@ -350,17 +538,18 @@ Direct file read/write for all page creation and editing
 - If a new page is created or existing pages are updated, update the index and append to the log.
 
 **Available tools:**
-```
-obsidian search query="<terms>" path=wiki
-obsidian search:context query="<terms>" path=wiki
-obsidian backlinks file="<page>"
-obsidian links file="<page>"
-Direct file read for all page access
-```
+
+| Operation | CLI approach | Direct approach |
+|-----------|-------------|-----------------|
+| Full-text search | `obsidian search query="<terms>" path=wiki` | `grep -ri "<terms>" wiki/` |
+| Search with context | `obsidian search:context query="<terms>"` | `grep -ri -C 3 "<terms>" wiki/` |
+| Find backlinks | `obsidian backlinks file="<page>"` | `grep -rl "\[\[<page>\]\]" wiki/` |
+| Find outgoing links | `obsidian links file="<page>"` | Parse wikilinks from file content |
+| Read pages | — | Direct file I/O |
 
 ### Lint
 
-**Goal:** Health-check the wiki. Find structural problems and conceptual gaps. Report findings; apply fixes only with human approval.
+**Goal:** Health-check the wiki. Find structural problems, schema violations, and conceptual gaps. Report findings; apply fixes only with human approval.
 
 **Principles — structural checks:**
 - Find orphan pages (no incoming links): `obsidian orphans`
@@ -368,25 +557,54 @@ Direct file read for all page access
 - Find unresolved links (wikilinks pointing to non-existent pages): `obsidian unresolved`
 - Scan for `[!unverified]` claims — assess whether any can now be verified or should be removed.
 - Scan for `[!gap]` claims — assess whether new sources or existing wiki content could fill them.
-- Check whether `wiki/index.md` is consistent with actual wiki pages.
+
+**Principles — schema checks:**
+- **Frontmatter completeness.** Every wiki page has the required fields for its `type`: the core fields (`type`, `sources`, `created`, `updated`, `status`, `tags`) on all; `entity_type` on entities; `raw_path` and `raw_hash` on source-summaries; `subjects` on comparisons. Dates are ISO 8601. `sources`, `tags`, and `subjects` are YAML lists, not strings. `sources` and `subjects` entries are wikilinks.
+- **TLDR position.** `> [!tldr]` is the first content block immediately after frontmatter on every wiki page. The index extractor depends on this.
+- **Page naming.** Filenames use Title Case with spaces, no disallowed special characters, and match their wikilink text exactly.
+- **Bare claims.** Scan for factual or analytical prose outside typed callout blocks — paragraphs in entity/concept/comparison pages that aren't list items, table rows, section headings, or inside a `> [!...]` block. Report as candidates, not verdicts — the heuristic will have false positives. `synthesis.md` is exempt (prose is implicitly analysis per its `type`).
+- **Index consistency.**
+  - Every file under `wiki/entities/`, `wiki/concepts/`, `wiki/sources/`, `wiki/comparisons/` has an entry in `wiki/index.md`.
+  - Every index entry resolves to an existing file.
+  - Each entry's source count matches `len(sources)` in the page's frontmatter.
+  - Each entry's TLDR matches the page's `[!tldr]` text.
+- **Source drift.** For each source-summary page, recompute SHA256 of the file at `raw_path` and compare against the stored `raw_hash`. Flag mismatches — the source has changed since ingest and pages citing it may be stale.
+
+**Principles — claim-audit sampling:**
+- Select 2-3 `[!source]` claims at random, preferring claims not audited in recent lint log entries (rotate coverage over time).
+- Read the cited source summary and trace to the raw source. Verify the claim is actually supported. Report discrepancies.
+- Record the audited claim references (page + line or heading) in the lint log entry so future passes can rotate.
 
 **Principles — conceptual review:**
-- Review `wiki/synthesis.md` and several hub pages. Identify: topics that are thinly covered, questions the wiki raises but doesn't answer, connections between entities/concepts that aren't yet linked, domains where a web search could fill gaps.
-- Present these as "Suggested Investigations" — new questions to explore, new sources to look for.
+- Produce specific findings, not vague suggestions. Surface concrete weak spots such as:
+  - Entities or concepts with only one cited source (thinly corroborated).
+  - Pages with `[!source]` callouts but no `[!analysis]` (sourced facts never integrated into the wiki's understanding).
+  - Hub pages (5+ backlinks) whose `updated` date is more than 30 days old.
+  - `[!gap]` callouts a targeted web search or new source could answer.
+  - Entity/concept pairs that co-occur in multiple sources but aren't cross-linked.
+- Present these as "Suggested Investigations" — specific next steps naming the pages and gaps, not generic recommendations.
 - This is what makes lint a knowledge-building operation, not just janitorial.
 
-**Report format:** Summary organized by category (orphans, dead ends, unresolved links, unverified claims, gaps, conceptual suggestions). Recommended actions listed. No fixes applied without human approval.
+**Report format:** Summary organized by category (orphans, dead ends, unresolved links, schema violations, source drift, bare-claim candidates, unverified claims, gaps, audit findings, conceptual suggestions). Recommended actions listed. No fixes applied without human approval.
+
+**Log append.** Every lint pass appends an entry to `wiki/log.md` with the date, a findings summary, and the audited claim references.
 
 **Available tools:**
-```
-obsidian orphans
-obsidian deadends
-obsidian unresolved
-obsidian search:context query="[!unverified]" path=wiki
-obsidian search:context query="[!gap]" path=wiki
-obsidian backlinks file="<page>"
-Direct file read for page content
-```
+
+| Operation | CLI approach | Direct approach |
+|-----------|-------------|-----------------|
+| Find orphans | `obsidian orphans` | Parse all files, collect wikilinks, diff against filenames |
+| Find dead ends | `obsidian deadends` | Parse all files, find pages with no outgoing wikilinks |
+| Find unresolved links | `obsidian unresolved` | Collect all wikilinks, diff against existing filenames |
+| Find unverified claims | `obsidian search:context query="[!unverified]"` | `grep -r "\[!unverified\]" wiki/` |
+| Find gaps | `obsidian search:context query="[!gap]"` | `grep -r "\[!gap\]" wiki/` |
+| Find source claims | `obsidian search:context query="[!source]"` | `grep -r "\[!source\]" wiki/` |
+| Find backlinks | `obsidian backlinks file="<page>"` | `grep -rl "\[\[<page>\]\]" wiki/` |
+| Validate frontmatter | — | Parse YAML front-matter block, check required fields by `type` |
+| Check TLDR position | — | Read line after closing `---`, verify it begins `> [!tldr]` |
+| Recompute source hash | — | `shasum -a 256 <raw_path>`, compare to stored `raw_hash` |
+| Detect bare-claim prose | — | `grep` paragraphs outside callout blocks in entity/concept/comparison pages |
+| Read pages | — | Direct file I/O |
 
 ---
 
@@ -414,7 +632,8 @@ These data contracts enable tooling. Do not deviate from them.
 
 ### Vault Layout
 
-- `raw/` — Immutable source documents. Read from here, never write.
+- `raw/` — Immutable source documents. Read from here, never write
+  (except converted `.md` files derived from non-markdown sources).
 - `wiki/` — Your knowledge base. You own this directory entirely.
   - `wiki/index.md` — Content catalog. Update on every ingest.
   - `wiki/log.md` — Chronological operation log. Append on every operation.
@@ -424,6 +643,8 @@ These data contracts enable tooling. Do not deviate from them.
   - `wiki/sources/` — Source summary pages (one per raw source).
   - `wiki/comparisons/` — Analysis and comparison pages.
 - `templates/` — Page templates. Use as starting points for new pages.
+- `purpose.md` — Human-owned research direction. Read for context
+  during ingest and query. Never modify this file.
 
 ### Frontmatter (Required on Every Wiki Page)
 
@@ -436,7 +657,7 @@ tags: []
 
 Additional by type:
 - entity: entity_type (string)
-- source-summary: raw_path (string)
+- source-summary: raw_path (string), raw_hash (string, SHA256 of raw source)
 - comparison: subjects (list of wikilinks)
 
 ### TLDR (Required)
@@ -454,6 +675,9 @@ One sentence. The index extracts this.
 If you are paraphrasing, synthesizing, or inferring — even if it seems
 obvious — use `[!analysis]`, not `[!source]`.
 
+When multiple sources support the same claim, cite all of them:
+`> [!source] Claim text. [[Source A]], [[Source B]], [[Source C]]`
+
 ### Cross-References
 
 All cross-references use wikilinks: `[[Page Name]]`.
@@ -470,9 +694,11 @@ ambiguous, disambiguate with a parenthetical: `Mercury (Planet).md`.
 
 ### Index Format
 
-`wiki/index.md`: one wikilink + one-line TLDR per page, organized by
-category (Entities, Concepts, Sources, Comparisons). Keep each entry
-under ~30 words. The index must remain small enough to read in full at
+`wiki/index.md`: one wikilink + parenthetical source count + one-line
+TLDR per page, organized by category (Entities, Concepts, Sources,
+Comparisons). Example: `- [[Page Name]] (3) — One-line TLDR.`
+The number is the count of entries in the page's `sources: []` list.
+Keep each entry under ~30 words. The index must remain small enough to read in full at
 the start of every query and ingest operation. When the index becomes
 unwieldy, split into per-category indexes.
 Rule of thumb: split when the index exceeds ~100 entries.
@@ -505,13 +731,53 @@ Log every ingest, every query that generates a page, every lint pass.
 
 These describe goals and principles. Use judgment about how to achieve them.
 
+### Writing Style
+
+Apply to prose on every wiki page. See `writing-style.md` for examples and
+before/after pairs.
+
+- **Funnel structure.** Each page, section, and paragraph leads with its
+  conclusion. A reader skimming first sentences should get the full story.
+- **Plain language, short sentences.** Prefer concrete, everyday words.
+  Split sentences with more than one clause doing real work.
+- **No hedging stacks.** One qualifier max ("this suggests X"), not
+  "this might potentially suggest X could possibly be Y."
+- **Emdashes sparingly.** At most one emdash pair per paragraph. Use
+  commas, colons, or periods otherwise. Use hyphens (not emdashes or
+  en-dashes) for numeric ranges (0.70-0.80).
+- **Define acronyms on first use per page.** Wiki pages are read standalone.
+- **Name recurring concepts.** Give compact labels on first introduction
+  so later references stay short.
+- **Lead in to tables and figures.** Tell the reader what to look for.
+  Caption as `**Table N.** ...` / `**Figure N.** ...`.
+- **Anchor thresholds to names.** "Corroboration threshold (≥ 3 cited
+  sources)" not bare "≥ 3."
+- **State assumptions explicitly.** Bullet them before analysis that
+  rests on them.
+- **Consistent numbers.** Pick a rounding convention per page. Commas in
+  thousands (18,000). Spell out numbers under 10 in prose unless grouped
+  with larger numbers.
+
+For `comparisons/` and `synthesis.md`: translate findings into practical
+implications ("so what"), and qualify cross-source comparisons when the
+sources differ in scope or method.
+
 ### Ingest
 
 Your goal is to extract knowledge from a source and integrate it into the
-wiki. Read the source, discuss what matters with the human, then update
+wiki. Read `purpose.md` for context on the human's research direction.
+Read the source. Before writing any pages, present the human with:
+(1) key takeaways, (2) planned new pages, (3) existing pages to update,
+(4) potential contradictions. Proceed after approval. In batch mode or
+when the human signals to proceed, skip the pre-check. Then update
 the wiki — creating new pages and revising existing ones as needed.
 Track provenance. Surface contradictions. Update the index, synthesis,
 and log when done. Commit via git.
+
+If the source is a PDF, convert it to markdown first using `pymupdf4llm`.
+Store the converted `.md` alongside the original in `raw/`. The source
+summary's `raw_path` points to the original file; ingest from the
+converted markdown. The original PDF stays immutable.
 
 For long sources (books, lengthy reports), ingest chapter by chapter or
 section by section. Each chunk gets its own source-summary page. This
@@ -537,6 +803,7 @@ become rare, the human can shift to periodic review.
 ### Query
 
 Your goal is to answer questions using the wiki's accumulated knowledge.
+Read `purpose.md` for context on the human's research direction.
 Search the index and wiki, read relevant pages, follow links. Cite
 specific pages. Distinguish sourced claims from your inferences. If the
 answer is valuable, file it as a new page. If you find gaps or stale
@@ -547,11 +814,35 @@ Marp slide deck, or other formats as appropriate.
 
 ### Lint
 
-Your goal is to health-check the wiki — both structurally and
+Your goal is to health-check the wiki — structurally, schema-wise, and
 conceptually. Check for orphans, dead ends, unresolved links, unverified
-claims, and gaps. Also step back and ask: what's missing from this wiki's
-understanding? What questions should be investigated? What sources would
-fill the gaps? Report findings. Apply fixes only with human approval.
+claims, and gaps.
+
+Validate schema: frontmatter completeness per `type` (core fields plus
+per-type fields; ISO 8601 dates; `sources`/`tags`/`subjects` as YAML
+lists of the right shape); TLDR is the first content block after
+frontmatter on every page; filenames are Title Case and match wikilink
+text; index consistency (every wiki page has an entry, every entry
+resolves to an existing file, source counts match `len(sources)`, TLDRs
+match). For each source-summary, recompute `raw_hash` against the file
+at `raw_path` and flag drift. Flag prose that looks like a factual or
+analytical claim but sits outside a typed callout — report as candidates,
+not verdicts (`synthesis.md` is exempt).
+
+Select 2-3 `[!source]` claims at random, preferring claims not audited
+in recent lint log entries, trace them to cited sources, and verify
+they are actually supported. Record the audited claim references in
+the lint log entry so coverage rotates.
+
+For the conceptual pass, name specific weak spots: thinly-sourced pages
+(one cited source), pages with sourced facts but no `[!analysis]`, hub
+pages (5+ backlinks) with `updated` older than 30 days, unanswered
+`[!gap]` callouts, and entity/concept pairs that co-occur in sources
+but aren't cross-linked. Present these as specific next steps, not
+generic suggestions.
+
+Report findings by category. Append a log entry including the audited
+claim references. Apply fixes only with human approval.
 
 ### Synthesis
 
@@ -626,5 +917,9 @@ At small scale, the LLM can check for staleness by comparing source modification
 | `wiki/index.md` | Content catalog (scaffold) |
 | `wiki/log.md` | Chronological operation log (scaffold) |
 | `wiki/synthesis.md` | Evolving high-level synthesis (scaffold) |
+| `purpose.md` | Human-owned research direction (scaffold) |
+| `writing-style.md` | Writing style reference (agent reads for detail) |
 
-Total: 1 skill file, 4 templates, 3 wiki scaffolds. No external dependencies beyond Obsidian, git, and standard Unix tools.
+Total: 1 skill file, 4 templates, 3 wiki scaffolds, 1 human-owned file, 1 style reference. External dependencies: Obsidian, git, pymupdf4llm, and standard Unix tools.
+
+These deliverables are domain-agnostic. The Init operation produces the same 10 files for any new wiki — a cooking wiki, a research wiki, a software architecture wiki. Domain-specific adaptation happens during the training period as the agent and human co-evolve the Wiki Conventions section of CLAUDE.md. Each wiki instance is an independent vault with its own git history, its own evolved schema, and its own compiled knowledge.

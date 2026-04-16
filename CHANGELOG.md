@@ -1,5 +1,70 @@
 # Changelog
 
+## 2026-04-15 — Revision 9
+
+Writing style review of PHILOSOPHY.md and README.md against the writing style guide.
+
+### Changed
+
+- **PHILOSOPHY.md: document-level lead added.** One-paragraph summary of the core principles so a reader who stops early gets the key ideas. (`PHILOSOPHY.md`)
+- **PHILOSOPHY.md: emdash overuse fixed.** "Everything compounds" paragraph had three emdashes; restructured to use periods and colons. (`PHILOSOPHY.md`)
+- **PHILOSOPHY.md: plain language fixes.** "epistemic hygiene" → "claims", "instantiation" → "setup", passive "get recorded" → active "records". (`PHILOSOPHY.md`)
+- **README.md: plain language fixes.** "types them by epistemic status" → "labels each one", "re-derived" → "rebuilt". (`README.md`)
+- **README.md: long sentence split.** Researcher example's final sentence split into two for clarity. (`README.md`)
+- **README.md: Obsidian CLI link removed.** Link pointed to Obsidian's main site, not CLI docs. Reference docs in the repo serve this purpose. (`README.md`)
+
+## 2026-04-15 — Revision 8
+
+README rewritten to explain what the LLM Wiki is, who it's for, and why it uses the Obsidian CLI.
+
+### Added
+
+- **"Why this exists" section.** Explains the core bet (compilation over retrieval) in two paragraphs. (`README.md`)
+- **"Who it's for" section.** Three concrete use cases — researcher, PM, SWE — each showing how the wiki works in practice. Identifies the common thread: the LLM handles the maintenance burden that causes humans to abandon knowledge bases. (`README.md`)
+- **"Why Obsidian CLI" section.** Justifies the Obsidian CLI choice: graph traversal for free via wikilinks, search without a search engine, the human's reading environment, and markdown as source of truth with no lock-in. (`README.md`)
+
+### Changed
+
+- **README intro rewritten.** One-paragraph description of what the tool is, replacing the previous one-line summary. (`README.md`)
+
+## 2026-04-15 — Revision 7
+
+PDF ingestion support. `pymupdf4llm` added as a required dependency for converting PDFs to markdown at ingest time.
+
+### Added
+
+- **`pymupdf4llm` as a required dependency.** PDFs are the primary source format in research workflows. Converting to markdown before ingestion is a required step, not an optional one. Added to prerequisites in the proposal and Phase 0 in the plan. (`implementation-proposal.md`, `plan.md`, `plan-checklist.md`)
+- **PDF conversion principle in Ingest operation.** When a source is a PDF, convert it to markdown using `pymupdf4llm`, store the `.md` alongside the original in `raw/`, then ingest from the converted markdown. The original PDF stays immutable; `raw_path` points to the original. (`implementation-proposal.md`)
+- **PDF conversion guidance in CLAUDE.md content.** Added to the Ingest guidance section within the skill file. (`implementation-proposal.md`)
+- **`pymupdf4llm` in Ingest available tools.** (`implementation-proposal.md`)
+- **Risk register entry.** `pymupdf4llm` producing poor markdown from complex PDFs (tables, multi-column, scanned). Mitigation: review converted markdown, supplement with Claude's native PDF reading. (`plan.md`)
+
+### Changed
+
+- **Vault structure updated.** `raw/` description now mentions PDFs and non-markdown sources alongside markdown. Converted `.md` files live alongside originals. (`implementation-proposal.md`)
+- **`raw/` description in CLAUDE.md content updated.** Notes the exception for converted `.md` files derived from non-markdown sources. (`implementation-proposal.md`)
+- **Phase 0 step numbering updated.** New step 0.3 (verify pymupdf4llm) inserted; subsequent steps renumbered 0.4-0.6. (`plan.md`, `plan-checklist.md`)
+- **Deliverables dependency note updated.** "No external dependencies beyond Obsidian, git, and standard Unix tools" → "External dependencies: Obsidian, git, pymupdf4llm, and standard Unix tools." (`implementation-proposal.md`)
+
+## 2026-04-15 — Revision 6
+
+Reusability and Init operation. The system is now explicitly designed as a general-purpose tool that can be instantiated for any Obsidian vault and any domain.
+
+### Added
+
+- **New philosophy principle: "The pattern is reusable; each wiki is unique."** The directory structure, templates, data contracts, and operations are domain-agnostic. Domain adaptation happens through the training period and Wiki Conventions, not upfront configuration. (`PHILOSOPHY.md`)
+- **New design principle (7).** Mirrors the philosophy principle in the proposal's design principles list. (`implementation-proposal.md`)
+- **Init operation.** Fourth operation alongside Ingest, Query, and Lint. Instantiates a new wiki in a fresh vault: creates directories, templates, scaffolds, CLAUDE.md, initializes git, verifies CLI. Run once per wiki; repeatable for any new vault. (`implementation-proposal.md`)
+- **Deliverables reusability note.** Deliverables are domain-agnostic. Each wiki instance is independent with its own git history, evolved schema, and compiled knowledge. (`implementation-proposal.md`)
+- **Init workflow framing in plan.** Phases 0-1 are the repeatable Init workflow (domain-agnostic). Phases 2-4 are per-wiki (domain-specific content and refinement). Dependency graph updated to show the boundary. (`plan.md`, `plan-checklist.md`)
+
+### Changed
+
+- **Operations intro updated.** "Three core operations" → "Four operations. Init is run once per wiki; the other three are ongoing." (`implementation-proposal.md`)
+- **Phase 0 goal updated.** Now notes that prerequisite checks are the same for every new wiki. (`plan.md`)
+- **Phase 1 goal updated.** Now notes that the scaffold is the same for any domain with no customization needed. (`plan.md`)
+- **README updated.** Reflects Init operation and reusability framing. (`README.md`)
+
 ## 2026-04-13 — Revision 5
 
 CLI test coverage, risk register corrections, and documentation fixes based on full comparative review of all planning documents against source materials (`llm-wiki.md`, `PHILOSOPHY.md`, `intermediate/`, `synthesis/`, `obsidian-cli/`) and Rounds 1-4. See `revisions/revisions-5.md` for full rationale.
