@@ -37,52 +37,27 @@ This aligns with the design philosophy: start with what markdown and existing to
 
 ### Source material
 
-- **`llm-wiki.md`** — Karpathy's original gist. Describes the core pattern: an LLM incrementally builds and maintains a persistent wiki of interlinked markdown files, sitting between you and your raw source documents. Defines the three-layer architecture (raw sources, wiki, schema) and the three operations (ingest, query, lint).
-
-- **`comments/`** — 387 individual comment files (`001.md` through `387.md`) extracted from the gist's comment thread. Each file is one comment: questions, implementations, critiques, tips, and discussion.
-
-- **`obsidian-cli/`** — Reference documentation for the Obsidian CLI.
-  - `cli-reference.md` — Full command reference for the Obsidian CLI (requires Obsidian 1.12.7+, desktop app running).
-  - `headless-sync.md` — Documentation for Obsidian Headless Sync (npm package for syncing without the desktop app).
-
-### Analysis (intermediate)
-
-- **`intermediate/`** — Thematic syntheses of the comment thread, organized by comment type. These were the first analytical pass over the raw comments.
-  - `01_questions.md` — Synthesis of questions raised in the thread, grouped by theme (error handling, scaling, structure, collaboration, comparisons to prior art, tooling).
-  - `02_implementations.md` — Synthesis of 178 concrete implementations shared in the thread, grouped by architectural approach (filesystem, databases, provenance, agent skills, knowledge graphs, multi-agent, research, voice/mobile, local/offline, domain-specific).
-  - `03_others.md` — Synthesis of 169 discussion comments: critiques, production experience reports, conceptual extensions, practical tips, prior art connections, and meta-discussion.
-
-### Analysis (synthesis)
-
-- **`synthesis/`** — Higher-order analysis that combines the intermediate syntheses into prioritized findings.
-  - `04_intermediate_synthesis.md` — Consolidates questions, implementations, and discussion into a single document organized around the core pattern. Identifies gaps, opportunities, and concrete solutions for each theme (epistemic integrity, provenance, scaling, structure, human role, multi-agent, conceptual extensions).
-  - `05_critical_synthesis.md` — Critical assessment of every proposed idea for plausibility, feasibility, effectiveness, and complexity. Identifies 6 core challenges ranked by severity, evaluates solutions in 3 tiers (implement first / implement when needed / defer or skip), and surfaces 3 underappreciated findings. Ends with a 4-phase priority stack.
-
-### Design philosophy
+- **`wiki-tool/`** — The wiki itself: Obsidian vault, `CLAUDE.md` schema, templates, and the `/wiki-ingest` Claude Code skill (with `wiki-extractor` and `wiki-auditor` subagents). This is the headline deliverable — start here to use or extend the tool.
 
 - **`PHILOSOPHY.md`** — The principles behind the LLM Wiki design. Covers: compilation over retrieval, agent as writer (not pipeline), strict data contracts with flexible workflows, epistemic integrity via claim typing, human-as-editor-in-chief, schema co-evolution, and compounding value.
 
-### Implementation
+- **`CHANGELOG.md`** — Revision-by-revision log of changes to the proposal and plan during the design phase.
 
-- **`implementation-proposal.md`** — Concrete proposal for implementing the LLM Wiki as a Claude Code skill backed by the Obsidian CLI (for search/graph) and direct file I/O (for reads/writes). Specifies: vault structure, four page templates with claim typing (Source/Analysis/Unverified/Gap), the full CLAUDE.md skill file with specifications/guidance split, and a scaling plan. Four operations: init (instantiate a new wiki in any vault), ingest, query, and lint — each described by goals and principles, not rigid procedures. The deliverables are domain-agnostic: one skill file, four templates, three wiki scaffolds. Domain adaptation happens through use, not upfront configuration.
-
-- **`plan.md`** — Implementation plan in five phases. Phases 0-1 (Init) are the domain-agnostic setup — repeatable for spinning up any new wiki. Phases 2-4 are per-wiki: first ingest, query/lint smoke tests, and iteration with schema refinement. Includes a risk register and success criteria.
-
-- **`plan-checklist.md`** — Trackable checklist version of the plan. Organized by phase, with verification steps for each deliverable.
-
-### Revision history
-
-- **`revisions/`** — Records of design revisions with rationale.
-  - `revisions-1.md` — Round 1. Specifications/guidance split, log.md and synthesis.md restored, shell scripts removed, plan condensed from nine to five phases, Obsidian CLI exclusivity relaxed.
-  - `revisions-2.md` — Round 2. Frontmatter compliance, claim typing for synthesis, index split threshold, dual output convention, ingestion gap acknowledged.
-  - `revisions-3.md` — Round 3. Page naming convention, lint CLI tests, source granularity guidance, bare-claims risk, page length guidance, log format H3.
-  - `revisions-4.md` — Round 4. Training period formalized, search scoping test, index entry conciseness, image handling, ingestion gap threshold strengthened. Includes philosophy check that withdrew two candidate changes.
-  - `revisions-5.md` — Round 5. Callout search test, link traversal test, risk register corrections, documentation fixes.
+- **`planning/`** — Archive of the planning and analysis work that produced `wiki-tool/`. Kept for context and provenance; not needed to use the tool.
+  - `llm-wiki.md` — Karpathy's original gist.
+  - `comments/` — 387 individual comment files from the gist's comment thread.
+  - `intermediate/` — Thematic syntheses of the comment thread (questions, implementations, discussion).
+  - `synthesis/` — Higher-order analysis: `04_intermediate_synthesis.md` consolidates findings; `05_critical_synthesis.md` ranks challenges and tiers solutions.
+  - `implementation-proposal.md` — The design proposal (vault structure, templates, CLAUDE.md schema, four operations).
+  - `plan.md` — Five-phase implementation plan with risk register and success criteria.
+  - `plan-checklist.md` — Trackable checklist version of the plan.
+  - `revisions/` — Revision rounds 1-5 with rationale.
+  - `obsidian-cli/` — Reference docs (`cli-reference.md`, `headless-sync.md`) collected during design.
 
 ## Reading order
 
-For understanding the analysis: `llm-wiki.md` -> `intermediate/` (01, 02, 03) -> `synthesis/` (04, 05)
+To use the tool: `wiki-tool/CLAUDE.md` (+ `wiki-tool/.claude/skills/wiki-ingest/SKILL.md`).
 
-For understanding the design: `PHILOSOPHY.md` -> `implementation-proposal.md`
+For the design rationale: `PHILOSOPHY.md` -> `planning/implementation-proposal.md`.
 
-For building the wiki: `implementation-proposal.md` -> `plan.md` -> `plan-checklist.md`
+For the origin and analysis: `planning/llm-wiki.md` -> `planning/intermediate/` -> `planning/synthesis/`.
