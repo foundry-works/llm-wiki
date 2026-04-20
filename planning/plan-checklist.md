@@ -109,11 +109,11 @@ Smoke-tested against Williamson, Xi, & Breyer 2012 on the `smoke-test` branch. C
 
 Scaffold validation only — throwaway content used to exercise remaining scaffold behaviors. Building a real wiki is a downstream project.
 
-- [ ] **4.1** Cross-reference and contradiction patterns exercised (2-3 throwaway ingests):
+- [x] **4.1** Cross-reference and contradiction patterns exercised (3 throwaway ingests):
   - [x] Ingest 2 (overlapping entities/concepts with Phase 2 source) — Wood et al. 2021 on `smoke-test` branch
-  - [ ] Ingest 3 (contradicts a prior claim)
+  - [x] Ingest 3 (contradicts a prior claim) — `raw/test-note-stricter-qwk-floor.md` (synthetic anonymous note proposing 0.75 QWK floor to directly contradict Williamson's 0.70). Both `[!source]` claims preserved side-by-side on [[Quadratic-Weighted Kappa]] and [[Human-Automated Score Agreement]]; authority asymmetry (peer-reviewed vs anonymous) named in `[!analysis]` without silent adjudication; essay-only scope qualifier preserved at every cite site; new "any callout citing a source adds it to frontmatter sources" convention applied retroactively, closing a Phase 4.2 design gap on the prior Minimum-Human-Human-QWK-Floor source.
   - [x] Cross-references correct, existing pages updated not duplicated
-  - [x] Contradictions surfaced (not smoothed) — Wood 2021 ingest surfaced the CTB 0.12 vs Williamson 0.15 SMD disagreement in [[Standardized Mean Score Difference]] and [[Williamson 2012 vs Wood 2021 - Automated Scoring Standards]]; Phase 3.1 query confirmed it remains unresolved rather than collapsed
+  - [x] Contradictions surfaced (not smoothed) — Wood 2021 ingest surfaced the CTB 0.12 vs Williamson 0.15 SMD disagreement in [[Standardized Mean Score Difference]] and [[Williamson 2012 vs Wood 2021 - Automated Scoring Standards]]; Phase 3.1 query confirmed it remains unresolved; Phase 4.1 Ingest 3 further exercised the pattern on a direct 0.70-vs-0.75 QWK-floor disagreement at asymmetric authority levels.
   - [x] Index clean, log accumulating, synthesis evolving
   - [x] Auditor catches gaps/attribution errors on each ingest
 - [x] **4.2** Source update tested (three-cycle test using a small synthetic markdown source, `raw/test-note-human-rater-reliability.md`):
@@ -127,7 +127,7 @@ Scaffold validation only — throwaway content used to exercise remaining scaffo
   - [x] Templates assessed for domain fitness — all four are fit for purpose as *starters*. Real pages developed richer structure than the templates (tables with captions, "Why it matters" sections, Extensions/corroboration from later sources, Self-audit blocks on source-summaries, Provenance gap sections on anonymous sources). These are elaborations a page grows into, not defects the template should pre-specify. Leaving templates minimal so they do not constrain page structure beyond the required frontmatter + TLDR + typed-callout pattern.
   - [x] New page type added if needed — no new type needed. Three ingests covered by existing types (source-summary, entity, concept, comparison, synthesis). Phase 3 query did not warrant a query-page type; Phase 4.2 synthetic source became a standard source-summary + concept pair.
   - [x] Reviewed whether diff-before-commit convention is needed — not needed at current supervision level. The pre-check-before-extraction + independent-auditor combination gives the human two review gates before commit (once to approve the plan, once to triage the auditor's gap report). The extractor's structured `pages_updated` with `what_changed` summaries also functions as a diff substitute. If supervision decreases past the training period (10 ingests), revisit.
-- [ ] **4.4** Committed to git
+- [x] **4.4** Committed to git — smoke-test content on `smoke-test` branch (`919960f`, `fa7a8b6`, …); scaffold-level updates (CLAUDE.md Wiki Conventions, plan-checklist ticks) on `main`.
 
 ---
 
@@ -153,7 +153,7 @@ The scaffold is complete when the items below are checked. A real wiki built on 
 - [x] End-to-end ingest with correct claim typing, provenance, and independent audit report
 - [x] Query with citations and dual output
 - [x] Lint with structural + conceptual checks (produces report; applies no fixes without approval)
-- [ ] Cross-reference and contradiction behaviors exercised across at least 2 overlapping throwaway ingests (1 overlapping ingest done; cross-ref + contradiction surfacing exercised, but 2nd overlap still pending)
+- [x] Cross-reference and contradiction behaviors exercised across at least 2 overlapping throwaway ingests — 2 overlapping ingests done: Wood 2021 (cross-references + surfaced CTB SMD disagreement) and Anonymous-2026-Stricter-0.75 (direct QWK-floor contradiction with authority asymmetry preserved)
 - [x] Source-update (hash drift) and hash-match audit-only paths both exercised (Phase 4.2 three-cycle test)
 - [x] Log has entries for ingests, queries, and lint
 - [x] Synthesis updated across multiple ingests (3 ingests integrated; revised in Phase 4.2 cycle 3 to reflect the 0.65 → 0.70 revision and the two-role ambiguity)
