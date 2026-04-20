@@ -122,11 +122,11 @@ Scaffold validation only — throwaway content used to exercise remaining scaffo
   - [x] Re-ingest updates affected pages (source-summary, 1 concept, 2 inline-citing concepts, index, log, synthesis all refreshed in place; internal inconsistency surfaced as `[!gap]`; Williamson tension reframed hypothetical → direct)
   - [x] Updated dates refreshed (raw_hash updated; `updated` dates already on 2026-04-18 from the same-day cycles)
   - [x] Unchanged source re-ingest correctly skipped (hash match) — skill auto-routed to audit-only mode, replaced (not stacked) the prior audit callout; auditor surfaced the 2-page audit-scope design issue (filed as Wiki Convention)
-- [ ] **4.3** Schema reviewed and evolved:
-  - [ ] Wiki Conventions has entries from real use
-  - [ ] Templates assessed for domain fitness
-  - [ ] New page type added if needed
-  - [ ] Reviewed whether diff-before-commit convention is needed
+- [x] **4.3** Schema reviewed and evolved (desk-check after 3 ingests):
+  - [x] Wiki Conventions has entries from real use — 9 entries, all specific and actionable, each traceable to an audit or workflow finding: 3 from Williamson 2012 (superlative scoping, one-criterion-multiple-stats, don't flatten enumerated structures, + reconstructed figures unverified); 2 from naming/frontmatter pattern (author filenames, YAML block form); 3 from Phase 4.2 (frontmatter-sources inclusion, anonymous-source filing, refresh-promotes-gaps).
+  - [x] Templates assessed for domain fitness — all four are fit for purpose as *starters*. Real pages developed richer structure than the templates (tables with captions, "Why it matters" sections, Extensions/corroboration from later sources, Self-audit blocks on source-summaries, Provenance gap sections on anonymous sources). These are elaborations a page grows into, not defects the template should pre-specify. Leaving templates minimal so they do not constrain page structure beyond the required frontmatter + TLDR + typed-callout pattern.
+  - [x] New page type added if needed — no new type needed. Three ingests covered by existing types (source-summary, entity, concept, comparison, synthesis). Phase 3 query did not warrant a query-page type; Phase 4.2 synthetic source became a standard source-summary + concept pair.
+  - [x] Reviewed whether diff-before-commit convention is needed — not needed at current supervision level. The pre-check-before-extraction + independent-auditor combination gives the human two review gates before commit (once to approve the plan, once to triage the auditor's gap report). The extractor's structured `pages_updated` with `what_changed` summaries also functions as a diff substitute. If supervision decreases past the training period (10 ingests), revisit.
 - [ ] **4.4** Committed to git
 
 ---
