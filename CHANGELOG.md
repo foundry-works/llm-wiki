@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-04-21 — Revision 13
+
+Installer fixes and a non-destructive way to add the skeleton to an existing project.
+
+### Added
+
+- **`--into` flag on `new-wiki.sh`.** Merges the `wiki-base/` skeleton into an existing directory via `rsync --ignore-existing`, so user files are preserved. Combined with `--git`, stages and commits the additions to an existing repo instead of re-initializing. Mutually exclusive with `--force`. (`scripts/new-wiki.sh`, `tests/test_smoke.py`, `README.md`)
+
+### Fixed
+
+- **Launcher symlinks now work.** `scripts/new-wiki.sh` and `scripts/wiki-doctor.sh` resolved their own location without following symlinks, so invoking them via `~/.local/bin/llm-wiki-new` / `~/.local/bin/llm-wiki-doctor` computed the wrong repo root and failed with `source skeleton not found: ~/.local/wiki-base`. Both scripts now follow their symlink chain before computing paths. (`scripts/new-wiki.sh`, `scripts/wiki-doctor.sh`)
+
 ## 2026-04-21 — Revision 12
 
 Contract alignment, first-run fixes, and smoke coverage.

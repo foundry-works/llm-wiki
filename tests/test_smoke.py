@@ -41,6 +41,52 @@ class SmokeTests(unittest.TestCase):
             self.assertEqual(status.returncode, 0, status.stderr)
             self.assertEqual(status.stdout.strip(), "")
 
+    def test_new_wiki_into_preserves_existing_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            target = Path(tmpdir) / "project"
+            target.mkdir()
+            existing = target / "README.md"
+            existing.write_text("original project readme\n", encoding="utf-8")
+            custom_purpose = target / "purpose.md"
+            custom_purpose.write_text("my existing purpose\n", encoding="utf-8")
+
+            # Fails when target exists without --into/--force.
+            refused = run(["bash", "scripts/new-wiki.sh", str(target)])
+            self.assertNotEqual(refused.returncode, 0)
+            self.assertIn("--into", refused.stderr)
+
+            merged = run(
+                ["bash", "scripts/new-wiki.sh", str(target), "--into"],
+            )
+            self.assertEqual(merged.returncode, 0, merged.stderr)
+
+            # Existing files untouched.
+            self.assertEqual(
+                existing.read_text(encoding="utf-8"), "original project readme\n"
+            )
+            self.assertEqual(
+                custom_purpose.read_text(encoding="utf-8"), "my existing purpose\n"
+            )
+
+            # Skeleton laid down alongside them.
+            self.assertTrue((target / "scripts/wiki-doctor.sh").is_file())
+            self.assertTrue((target / "wiki/synthesis.md").is_file())
+            self.assertTrue((target / "wiki/entities/.gitkeep").is_file())
+
+            # Rejects mutually exclusive flags.
+            conflict = run(
+                ["bash", "scripts/new-wiki.sh", str(target), "--into", "--force"],
+            )
+            self.assertNotEqual(conflict.returncode, 0)
+            self.assertIn("mutually exclusive", conflict.stderr)
+
+    def test_new_wiki_into_requires_existing_dir(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            missing = Path(tmpdir) / "does-not-exist"
+            result = run(["bash", "scripts/new-wiki.sh", str(missing), "--into"])
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("requires an existing target", result.stderr)
+
     def test_root_doctor_wrapper_passes_on_fresh_wiki(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             target = Path(tmpdir) / "example"
