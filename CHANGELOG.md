@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-04-21 — Revision 11
+
+First-time-setup ergonomics and repo cleanup. Goal: collapse the cold-start path from "clone → cd → script → cd → edit → claude → ingest" to "install → new-wiki → ingest."
+
+### Added
+
+- **`install.sh`.** One-shot installer. Clones the repo to `~/.local/share/llm-wiki` (override with `LLM_WIKI_DIR`) and symlinks `scripts/new-wiki.sh` to `~/.local/bin/llm-wiki-new` (override with `LLM_WIKI_BIN`). Re-runnable: updates the clone in place. No skill installation, no global Claude Code state beyond the launcher symlink. (`install.sh`)
+- **"Getting started" section in README.** `curl | sh` install line, first-wiki example, manual-install fallback, Obsidian-optional note. Placed before "What's here" so new users hit it on first scroll. (`README.md`)
+
+### Changed
+
+- **`wiki-tool/` renamed to `wiki-base/`.** The directory is a skeleton copied on every `new-wiki.sh` invocation, so "base" reads truer than "tool." Nine references updated across `scripts/new-wiki.sh` and `README.md`; no other callers in the repo. (`scripts/new-wiki.sh`, `README.md`)
+- **README tagline softened.** "browsable in Obsidian" → "browsable in any editor, or in Obsidian for graph view and backlinks." Reflects that Obsidian is optional. (`README.md`)
+- **"Why Obsidian CLI" closing sentence added.** Notes the grep/file-I/O fallback exists for every CLI call, so Obsidian is the preferred path, not a required one. Resolves the apparent tension between the section's framing and the new Obsidian-optional claim. (`README.md`)
+- **`wiki-base/` entry in "What's here" expanded.** Lists all three skills (`/wiki-ingest`, `/wiki-query`, `/wiki-purpose`), both subagents, and `scripts/wiki-lint.py`. Previous copy named only `/wiki-ingest`. (`README.md`)
+- **`scripts/new-wiki.sh` entry reframed.** Leads with `llm-wiki-new` as the primary invocation; direct `scripts/new-wiki.sh` documented as the manual-install path. (`README.md`)
+- **"Reading order" simplified.** Now points at Getting started → `wiki-base/CLAUDE.md` (schema) → skill docs. (`README.md`)
+
+### Removed
+
+- **`planning/` archive.** 700+ files covering Karpathy's gist, comments, intermediate syntheses, higher-order analyses, revisions, and Obsidian CLI reference docs. The archive served its purpose during design; now deadweight in the repo. README's `planning/` entry and reading-order references removed. (`README.md`, `planning/`)
+
 ## 2026-04-16 — Revision 10
 
 Research-driven additions to the proposal and plan. 29 related projects surveyed in `research/` informed these changes.

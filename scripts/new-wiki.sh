@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# new-wiki.sh — Spawn a new wiki from the wiki-tool/ skeleton.
+# new-wiki.sh — Spawn a new wiki from the wiki-base/ skeleton.
 #
 # Usage:
 #   scripts/new-wiki.sh <target-dir> [--git] [--force]
 #
-# Copies wiki-tool/ (schema, templates, skill, empty index/log/synthesis)
+# Copies wiki-base/ (schema, templates, skill, empty index/log/synthesis)
 # to <target-dir>, excluding smoke-test leftovers. Creates the wiki
 # subdirectories (entities, concepts, sources, comparisons) and
 # raw/assets/ so the vault is ready for /wiki-ingest.
@@ -42,7 +42,7 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-SRC="$REPO_ROOT/wiki-tool"
+SRC="$REPO_ROOT/wiki-base"
 
 [[ -d "$SRC" ]] || { echo "source skeleton not found: $SRC" >&2; exit 2; }
 
@@ -58,7 +58,7 @@ fi
 mkdir -p "$TARGET"
 TARGET_ABS="$(cd "$TARGET" && pwd)"
 
-# rsync copies everything under wiki-tool/ except:
+# rsync copies everything under wiki-base/ except:
 #   - .DS_Store (macOS noise)
 #   - any source files in raw/ (keep raw/assets/ but not any .md/.pdf etc.)
 #   - any populated wiki subdirs (entities/concepts/sources/comparisons)
@@ -87,13 +87,23 @@ for d in raw/assets wiki/entities wiki/concepts wiki/sources wiki/comparisons; d
   touch "$TARGET_ABS/$d/.gitkeep"
 done
 
+# Substitute {{date}} placeholders in wiki/synthesis.md so the spawned
+# vault passes wiki-lint on day 1. Templates in templates/ keep {{date}}
+# — those are instantiated by the Obsidian Templates plugin on create.
+TODAY="$(date +%Y-%m-%d)"
+if [[ -f "$TARGET_ABS/wiki/synthesis.md" ]]; then
+  # portable in-place sed (macOS + linux)
+  sed -i.bak "s/{{date}}/$TODAY/g" "$TARGET_ABS/wiki/synthesis.md"
+  rm -f "$TARGET_ABS/wiki/synthesis.md.bak"
+fi
+
 if [[ "$INIT_GIT" -eq 1 ]]; then
   (
     cd "$TARGET_ABS"
     git init -q
     git add .
     git -c user.email=wiki@local -c user.name=wiki \
-      commit -q -m "Initial wiki skeleton from wiki-tool/"
+      commit -q -m "Initial wiki skeleton from wiki-base/"
   )
 fi
 

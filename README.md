@@ -1,6 +1,6 @@
 # LLM Wiki
 
-A large language model (LLM) that builds and maintains a personal knowledge wiki from your source documents. You feed it sources — papers, articles, reports, transcripts — and it extracts the knowledge, integrates it with what's already known, and surfaces contradictions. It builds cross-references and maintains the whole thing over time. The result is a persistent, compounding knowledge base in plain markdown, browsable in Obsidian.
+A large language model (LLM) that builds and maintains a personal knowledge wiki from your source documents. You feed it sources — papers, articles, reports, transcripts — and it extracts the knowledge, integrates it with what's already known, and surfaces contradictions. It builds cross-references and maintains the whole thing over time. The result is a persistent, compounding knowledge base in plain markdown — browsable in any editor, or in Obsidian for graph view and backlinks.
 
 Based on [Karpathy's LLM Wiki gist](https://gist.github.com/karpathy/1dd0294ef9567971c1e4348a90d69285) and the 387 community comments it received.
 
@@ -33,33 +33,47 @@ The system is implemented as a Claude Code skill backed by the Obsidian command-
 
 This aligns with the design philosophy: start with what markdown and existing tools give you for free, add infrastructure only when concrete bottlenecks demand it.
 
+Every Obsidian CLI call has a grep/file-I/O fallback in the schema, so Obsidian is the preferred path, not a required one.
+
+## Getting started
+
+Install the repo and a launcher on your `PATH`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/tylerburleigh/llm-wiki/main/install.sh | sh
+```
+
+This clones the repo to `~/.local/share/llm-wiki` and symlinks `scripts/new-wiki.sh` to `~/.local/bin/llm-wiki-new`. Override with `LLM_WIKI_DIR` / `LLM_WIKI_BIN` if you prefer different paths. Re-run the installer to update.
+
+Then spawn your first wiki:
+
+```sh
+llm-wiki-new ~/wikis/my-wiki --git
+cd ~/wikis/my-wiki
+# edit purpose.md, drop a source into raw/, then:
+claude     # and invoke: /wiki-ingest raw/<your-source>
+```
+
+If you'd rather not pipe `install.sh` into a shell, clone manually and run `scripts/new-wiki.sh` directly — the launcher is just a convenience.
+
+Obsidian is optional. The vault is plain markdown and every agent operation has a grep/file-I/O fallback; Obsidian only adds graph view, backlinks panel, and live wikilink rendering for human browsing.
+
 ## What's here
 
 ### Source material
 
-- **`wiki-tool/`** — Scaffolding for a new wiki: an empty Obsidian vault skeleton (`CLAUDE.md` schema, templates, empty `index.md`/`log.md`/`synthesis.md`) plus the `/wiki-ingest` Claude Code skill and its `wiki-extractor` + `wiki-auditor` subagents. This is the headline deliverable — use `scripts/new-wiki.sh` (below) to spawn a fresh wiki from it.
+- **`wiki-base/`** — Scaffolding for a new wiki: an empty Obsidian vault skeleton (`CLAUDE.md` schema, templates, empty `index.md`/`log.md`/`synthesis.md`), three Claude Code skills (`/wiki-ingest`, `/wiki-query`, `/wiki-purpose`), the `wiki-extractor` and `wiki-auditor` subagents that back ingest, and `scripts/wiki-lint.py` for deterministic schema validation. This is the headline deliverable — `llm-wiki-new` (after `install.sh`) spawns a fresh wiki from it.
 
-- **`scripts/new-wiki.sh`** — Spawns a new wiki from `wiki-tool/` into a target directory. Creates the expected subdirectories (entities, concepts, sources, comparisons, raw/assets) with `.gitkeep` files. Pass `--git` to initialize a fresh git repo for the new wiki, `--force` to overwrite an existing target.
+- **`scripts/new-wiki.sh`** — Spawns a new wiki from `wiki-base/` into a target directory. Creates the expected subdirectories (entities, concepts, sources, comparisons, raw/assets) with `.gitkeep` files. Pass `--git` to initialize a fresh git repo for the new wiki, `--force` to overwrite an existing target. `install.sh` symlinks this as `llm-wiki-new` on your `PATH`; direct invocation is the manual-install path.
+
+- **`install.sh`** — One-shot installer. Clones the repo to `~/.local/share/llm-wiki` and symlinks `scripts/new-wiki.sh` as `llm-wiki-new` in `~/.local/bin`. See [Getting started](#getting-started).
 
 - **`PHILOSOPHY.md`** — The principles behind the LLM Wiki design. Covers: compilation over retrieval, agent as writer (not pipeline), strict data contracts with flexible workflows, epistemic integrity via claim typing, human-as-editor-in-chief, schema co-evolution, and compounding value.
 
 - **`CHANGELOG.md`** — Revision-by-revision log of changes to the proposal and plan during the design phase.
 
-- **`planning/`** — Archive of the planning and analysis work that produced `wiki-tool/`. Kept for context and provenance; not needed to use the tool.
-  - `llm-wiki.md` — Karpathy's original gist.
-  - `comments/` — 387 individual comment files from the gist's comment thread.
-  - `intermediate/` — Thematic syntheses of the comment thread (questions, implementations, discussion).
-  - `synthesis/` — Higher-order analysis: `04_intermediate_synthesis.md` consolidates findings; `05_critical_synthesis.md` ranks challenges and tiers solutions.
-  - `implementation-proposal.md` — The design proposal (vault structure, templates, CLAUDE.md schema, four operations).
-  - `plan.md` — Five-phase implementation plan with risk register and success criteria.
-  - `plan-checklist.md` — Trackable checklist version of the plan.
-  - `revisions/` — Revision rounds 1-5 with rationale.
-  - `obsidian-cli/` — Reference docs (`cli-reference.md`, `headless-sync.md`) collected during design.
-
 ## Reading order
 
-To use the tool: `wiki-tool/CLAUDE.md` (+ `wiki-tool/.claude/skills/wiki-ingest/SKILL.md`).
+To use the tool: [Getting started](#getting-started) -> `wiki-base/CLAUDE.md` (schema reference) -> the relevant skill docs under `wiki-base/.claude/skills/`.
 
-For the design rationale: `PHILOSOPHY.md` -> `planning/implementation-proposal.md`.
-
-For the origin and analysis: `planning/llm-wiki.md` -> `planning/intermediate/` -> `planning/synthesis/`.
+For the design rationale: `PHILOSOPHY.md`.
