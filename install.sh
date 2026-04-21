@@ -2,7 +2,7 @@
 # Install the LLM Wiki.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/tylerburleigh/llm-wiki/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/foundry-works/llm-wiki/main/install.sh | sh
 #
 # Clones the repo to $LLM_WIKI_DIR (default: ~/.local/share/llm-wiki) and
 # symlinks scripts/new-wiki.sh to $LLM_WIKI_BIN/llm-wiki-new (default:
@@ -10,7 +10,7 @@
 
 set -eu
 
-REPO="${LLM_WIKI_REPO:-https://github.com/tylerburleigh/llm-wiki.git}"
+REPO="${LLM_WIKI_REPO:-https://github.com/foundry-works/llm-wiki.git}"
 CLONE_DIR="${LLM_WIKI_DIR:-$HOME/.local/share/llm-wiki}"
 BIN_DIR="${LLM_WIKI_BIN:-$HOME/.local/bin}"
 

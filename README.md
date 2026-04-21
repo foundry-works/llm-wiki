@@ -40,7 +40,7 @@ Every Obsidian CLI call has a grep/file-I/O fallback in the schema, so Obsidian 
 Install the repo and a launcher on your `PATH`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/tylerburleigh/llm-wiki/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/foundry-works/llm-wiki/main/install.sh | sh
 ```
 
 This clones the repo to `~/.local/share/llm-wiki` and symlinks `scripts/new-wiki.sh` to `~/.local/bin/llm-wiki-new`. Override with `LLM_WIKI_DIR` / `LLM_WIKI_BIN` if you prefer different paths. Re-run the installer to update.
