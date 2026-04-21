@@ -205,14 +205,19 @@ sources differ in scope or method.
 ### Ingest
 
 Your goal is to extract knowledge from a source and integrate it into the
-wiki. Read `purpose.md` for context on the human's research direction.
-Read the source. Before writing any pages, present the human with:
-(1) key takeaways, (2) planned new pages, (3) existing pages to update,
-(4) potential contradictions. Proceed after approval. In batch mode or
-when the human signals to proceed, skip the pre-check. Then update
-the wiki — creating new pages and revising existing ones as needed.
-Track provenance. Surface contradictions. Update the index, synthesis,
-and log when done. Commit via git.
+wiki. Integration is the point: the wiki compounds by cross-linking
+sources and tracking claim provenance; a pile of summaries is not a
+knowledge base. Read `purpose.md` for context on the human's research
+direction. Read the source. Before writing any pages, present the human
+with: (1) key takeaways, (2) planned new pages, (3) existing pages to
+update, (4) potential contradictions. The pre-check is the human's
+checkpoint before page writes land. Proceed after approval. In batch
+mode or when the human signals to proceed, skip the pre-check. Then
+update the wiki, creating new pages and revising existing ones as
+needed. Track provenance and surface contradictions: an unsourced
+claim promoted to fact poisons everything built on it. Update the
+index, synthesis, and log when done; each is how the wiki compounds.
+Commit via git.
 
 The `/wiki-ingest` skill (in `.claude/skills/wiki-ingest/`) operationalizes
 this workflow with two subagents: `wiki-extractor` writes the pages, and
@@ -258,11 +263,16 @@ shift to periodic review.
 ### Query
 
 Your goal is to answer questions using the wiki's accumulated knowledge.
-Read `purpose.md` for context on the human's research direction.
-Search the index and wiki, read relevant pages, follow links. Cite
-specific pages. Distinguish sourced claims from your inferences. If the
-answer is valuable, file it as a new page. If you find gaps or stale
-content, surface them (fixes go to ingest / lint, not query).
+Queries are when the wiki pays off — but they also compound it when
+reusable answers get filed back, so a question that isn't filed is a
+synthesis thrown away. Read `purpose.md` for context on the human's
+research direction. Search the index and wiki, read relevant pages,
+follow links. Cite specific pages. Distinguish sourced claims from your
+inferences: without the distinction, inferences get re-read as facts
+and the wiki loses its epistemic foundation. If the answer is valuable,
+file it as a new page. If you find gaps or stale content, surface them;
+fixes go to ingest or lint, not query, because mixing repair with query
+obscures what changed when something goes wrong.
 
 Answers can take different forms: markdown page, comparison table,
 Marp slide deck, or other formats as appropriate.
@@ -276,8 +286,12 @@ fine.
 ### Lint
 
 Your goal is to health-check the wiki — structurally, schema-wise, and
-conceptually. Check for orphans, dead ends, unresolved links, unverified
-claims, and gaps.
+conceptually. Left unmaintained, the wiki drifts: links break, facts
+go stale, synthesis lags. Lint catches drift before it compounds into
+dependent pages. Check for orphans (wasted extraction effort), dead
+ends (unreachable knowledge), unresolved links (broken tooling),
+unverified claims (epistemic debt), and gaps (known-unknowns to
+triage).
 
 Run `scripts/wiki-lint.py` first. It deterministically validates the
 machine-checkable invariants: frontmatter shape per type (core fields
@@ -314,9 +328,13 @@ claim references. Apply fixes only with human approval.
 ### Synthesis
 
 `wiki/synthesis.md` is your evolving thesis — a standalone summary of
-everything the wiki knows. Revise it on every ingest. Keep it readable
-and under ~1,000 words. It should reflect the current state of the wiki's
-knowledge, not just the latest source.
+everything the wiki knows. It's what makes the wiki a knowledge base
+rather than a stack of source summaries. Revise it on every ingest,
+because the wiki's understanding has changed; a stale synthesis
+re-describes the wiki's state before the new source and misleads every
+future query that reads it. Keep it readable and under ~1,000 words.
+It should reflect the current state of the wiki's knowledge, not just
+the latest source.
 
 Synthesis is analytical by nature — its `type: synthesis` signals that
 all content represents your integrated understanding. Write in prose

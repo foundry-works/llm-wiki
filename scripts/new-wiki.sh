@@ -112,9 +112,11 @@ cat <<EOF
 Wiki skeleton created at: $TARGET_ABS
 
 Next:
-  1. Edit $TARGET_ABS/purpose.md — describe your research direction.
-  2. Drop a source file in $TARGET_ABS/raw/ (PDF or markdown).
-  3. Open the vault in Obsidian (optional, for browsing).
-  4. From $TARGET_ABS, run Claude Code and invoke /wiki-ingest <raw/your-source>.
+  1. Install Python deps: pip install -r $TARGET_ABS/requirements.txt
+     (PyYAML for wiki-lint; pymupdf4llm for PDF ingest.)
+  2. Edit $TARGET_ABS/purpose.md — describe your research direction.
+  3. Drop a source file in $TARGET_ABS/raw/ (PDF or markdown).
+  4. Open the vault in Obsidian (optional, for browsing).
+  5. From $TARGET_ABS, run Claude Code and invoke /wiki-ingest <raw/your-source>.
 
 EOF
