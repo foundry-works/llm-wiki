@@ -40,10 +40,13 @@ class SmokeTests(unittest.TestCase):
             # The state-tracking layer ships scaffolded with date substitution
             # so a fresh vault passes lint on day 1.
             for rel in (
+                "wiki/dashboard.md",
+                "wiki/debates.md",
                 "wiki/handoff.md",
                 "wiki/backlog.md",
                 "wiki/decisions.md",
                 "wiki/docs/graph-protocol.md",
+                "wiki/queries/query-hub.md",
             ):
                 contents = (target / rel).read_text(encoding="utf-8")
                 self.assertNotIn("{{date}}", contents, f"{rel} still has placeholder")

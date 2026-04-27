@@ -89,11 +89,14 @@ TARGET_ABS="$(cd "$TARGET" && pwd)"
 # Remember which singleton files were already present before rsync so we
 # don't rewrite {{date}} placeholders in user-authored files.
 DATE_FILES=(
+  "wiki/dashboard.md"
+  "wiki/debates.md"
   "wiki/synthesis.md"
   "wiki/handoff.md"
   "wiki/backlog.md"
   "wiki/decisions.md"
   "wiki/docs/graph-protocol.md"
+  "wiki/queries/query-hub.md"
 )
 declare -a PRE_EXISTED
 for i in "${!DATE_FILES[@]}"; do
@@ -131,10 +134,11 @@ mkdir -p \
   "$TARGET_ABS/wiki/entities" \
   "$TARGET_ABS/wiki/concepts" \
   "$TARGET_ABS/wiki/sources" \
-  "$TARGET_ABS/wiki/comparisons"
+  "$TARGET_ABS/wiki/comparisons" \
+  "$TARGET_ABS/wiki/queries"
 
 # Keep empty dirs in git by dropping .gitkeep.
-for d in raw/assets wiki/entities wiki/concepts wiki/sources wiki/comparisons; do
+for d in raw/assets wiki/entities wiki/concepts wiki/sources wiki/comparisons wiki/queries; do
   touch "$TARGET_ABS/$d/.gitkeep"
 done
 

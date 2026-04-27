@@ -70,8 +70,9 @@ Apply the smallest change that resolves the issue:
 - Restore missing scope qualifiers or caveats the source makes.
 - Add missing source-summary wikilinks and `sources:` frontmatter
   entries when the page already relies on them.
-- Repair obvious bookkeeping drift (status, updated date, index count,
-  TLDR mismatch) caused by the same edit.
+- Repair obvious bookkeeping drift (status, updated date, source list)
+  caused by the same edit. Index drift is repaired by rebuilding the
+  derived cache in the bookkeeping step.
 
 Do not widen the page just because you noticed adjacent opportunities.
 
@@ -80,7 +81,11 @@ Do not widen the page just because you noticed adjacent opportunities.
 When the repair changes page state:
 
 - Set `updated:` to today on every edited page.
-- Update `wiki/index.md` if the TLDR, title, or source count changed.
+- Rebuild `wiki/index.md` with `python3 scripts/wiki-lint.py --rebuild-index`
+  if the TLDR, title, source count, or page set changed.
+- Update `wiki/dashboard.md`, `wiki/debates.md`, or `wiki/backlog.md`
+  only when the repaired issue changes what a session-start reader needs
+  to know.
 - Append `wiki/log.md`: `### [YYYY-MM-DD] repair | <short description>`
 
 Revise `wiki/synthesis.md` only if the corrected issue materially changes
@@ -93,7 +98,7 @@ Summarize:
 - Which files changed
 - What claim or structure was corrected
 - Whether the fix was source-grounded or structural
-- Whether index/log/synthesis were updated
+- Whether the index was rebuilt and log/synthesis/surface pages were updated
 
 Remind the user to review and commit when ready. Do not auto-commit.
 

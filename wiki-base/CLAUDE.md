@@ -29,9 +29,19 @@ These data contracts enable tooling. Do not deviate from them.
 - `raw/` — Immutable source documents. Read from here, never write
   (except converted `.md` files derived from non-markdown sources).
 - `wiki/` — Your knowledge base. You own this directory entirely.
-  - `wiki/index.md` — Content catalog. Update on every ingest.
+  - `wiki/dashboard.md` — Session-start front door. Agent-maintained
+    surface that routes the human to synthesis, gaps, debates, recent
+    activity, and deeper maps.
+  - `wiki/index.md` — Content catalog. Generated from page frontmatter
+    and TLDRs; refresh with `python3 scripts/wiki-lint.py --rebuild-index`
+    after creating, deleting, or materially retitling knowledge pages.
   - `wiki/log.md` — Chronological operation log. Append on every operation.
   - `wiki/synthesis.md` — Evolving high-level synthesis. Revise on every ingest.
+  - `wiki/debates.md` — Surface for contradictions, disagreements, and
+    unresolved tensions that matter across pages.
+  - `wiki/queries/` — Durable answers to recurring questions that are
+    worth keeping but do not naturally belong under entities, concepts,
+    sources, or comparisons.
   - `wiki/conventions.md` — Domain-specific conventions owned by this
     vault. Read at the start of every operation. Append as patterns emerge.
   - `wiki/handoff.md` — Cross-session continuity. Read at session start;
@@ -67,13 +77,14 @@ Additional by type:
   extractors to dedup on ingest and by lint to flag collisions.
 - source-summary: raw_path (string), raw_hash (string, SHA256 of raw source)
 - comparison: subjects (list of wikilinks)
-- meta: no additional fields. Used for infrastructure pages (handoff,
-  backlog, decisions, graph-protocol). These pages stay out of the
-  knowledge graph — they're exempt from the index requirement and from
-  the Title Case filename rule, but still get full frontmatter and TLDR
-  validation. `wiki/index.md`, `wiki/log.md`, and `wiki/conventions.md`
-  are legacy plain-markdown pages that pre-date this type and remain
-  exempt from page-shape checks; new infrastructure pages use `type: meta`.
+- meta: no additional fields. Used for infrastructure pages (dashboard,
+  debates, query hubs, handoff, backlog, decisions, graph-protocol).
+  These pages stay out of the knowledge graph — they're exempt from the
+  index requirement and from the Title Case filename rule, but still get
+  full frontmatter and TLDR validation. `wiki/index.md`, `wiki/log.md`,
+  and `wiki/conventions.md` are legacy plain-markdown pages that
+  pre-date this type and remain exempt from page-shape checks; new
+  infrastructure pages use `type: meta`.
 
 ### TLDR (Required)
 
@@ -122,13 +133,22 @@ ambiguous, disambiguate with a parenthetical: `Mercury (Planet).md`.
 
 ### Index Format
 
-`wiki/index.md`: one wikilink + parenthetical source count + one-line
-TLDR per page, organized by category (Entities, Concepts, Sources,
-Comparisons). Example: `- [[Page Name]] (3) — One-line TLDR.`
-The number is the count of entries in the page's `sources: []` list.
-Keep each entry under ~30 words. The index must remain small enough to read in full at
-the start of every query and ingest operation. When the index becomes
-unwieldy, split into per-category indexes.
+`wiki/index.md` is a derived cache, not the source of truth. It is
+rendered from each knowledge page's frontmatter and first `[!tldr]`
+line. Rebuild it after page-shape changes with:
+
+```bash
+python3 scripts/wiki-lint.py --rebuild-index
+```
+
+The rendered format is one wikilink + parenthetical source count +
+one-line TLDR per page, organized by category (Entities, Concepts,
+Sources, Comparisons). Example:
+`- [[Page Name]] (3) — One-line TLDR.` The number is the count of
+entries in the page's `sources: []` list. Keep each TLDR under ~30 words.
+The index must remain small enough to read in full at the start of every
+query and ingest operation. When the index becomes unwieldy, split into
+per-category indexes.
 Rule of thumb: split when the index exceeds ~100 entries.
 
 ### Log Format
@@ -158,6 +178,45 @@ Log every ingest, every query that generates a page, every lint pass.
 - If a page grows past ~1,500 words, consider splitting it. An entity
   page might spawn a dedicated comparison, timeline, or sub-topic page.
   Each sub-page gets its own frontmatter, TLDR, and index entry.
+
+### Progressive Disclosure
+
+Maintain the wiki as an iceberg: surface first, then skim, then read,
+then dive.
+
+- **Surface:** `wiki/dashboard.md` and `python3 scripts/wiki-lint.py
+  --briefing` show what changed, what needs attention, and where to
+  start. Keep dashboard prose short and agent-maintained; use the
+  briefing command for deterministic counts and recent activity.
+- **Skim:** `wiki/index.md`, `wiki/debates.md`, `wiki/queries/query-hub.md`,
+  and `wiki/backlog.md` give compact browsing routes by type, conflict,
+  question, and gap.
+- **Read:** knowledge pages lead with TLDR and should quickly expose the
+  conclusion, source posture, important gaps, and related pages before
+  deep claim bodies.
+- **Dive:** source summaries, claim callouts, extraction audits,
+  decisions, handoff notes, raw source hashes, and git history preserve
+  provenance.
+
+Ownership rules:
+
+- Generated: `wiki/index.md` is rebuilt by `python3 scripts/wiki-lint.py
+  --rebuild-index`. Do not hand-maintain entries.
+- Agent-maintained: `wiki/dashboard.md`, `wiki/debates.md`,
+  `wiki/queries/query-hub.md`, `wiki/synthesis.md`, `wiki/backlog.md`,
+  `wiki/handoff.md`, `wiki/decisions.md`, and `wiki/log.md`.
+- Human-owned: `purpose.md`, and any corrections the human explicitly
+  makes. Read them; do not overwrite them.
+- Raw-grounded: `raw/` files are immutable source material. Source
+  summaries point back to them through `raw_path` and `raw_hash`.
+
+When an operation changes the state a human would need at session
+start, update the surface. Ingests can affect dashboard recent activity,
+priority gaps, debates, synthesis, and key hubs. Queries can create
+durable query answers under `wiki/queries/` or comparison pages.
+Repairs and lint passes can affect backlog, debates, and dashboard
+freshness. Keep these edits scoped; surface pages route to evidence,
+they do not replace the sourced pages.
 
 ### Tooling Approaches
 
@@ -246,8 +305,9 @@ checkpoint before page writes land. Proceed after approval. In batch
 mode or when the human signals to proceed, skip the pre-check. Then
 update the wiki, creating new pages and revising existing ones as
 needed. Track provenance and surface contradictions: an unsourced
-claim promoted to fact poisons everything built on it. Update the
-index, synthesis, and log when done; each is how the wiki compounds.
+claim promoted to fact poisons everything built on it. Rebuild the
+index, update synthesis, and append the log when done; each is how the
+wiki compounds.
 Summarize what changed. The human reviews and commits via git.
 
 The `/wiki-ingest` skill (in `.claude/skills/wiki-ingest/`) operationalizes
@@ -312,7 +372,7 @@ Marp slide deck, or other formats as appropriate.
 
 The `/wiki-query` skill (in `.claude/skills/wiki-query/`) operationalizes
 this workflow — context reading, read plan, claim-typed answer assembly,
-filing decision, and log/index/synthesis updates. Use the skill for
+filing decision, and log/index rebuild/synthesis updates. Use the skill for
 substantive questions; for trivial index lookups, answering inline is
 fine.
 
@@ -325,9 +385,9 @@ other issues surfaced by audit, lint, or human review. It is not a
 re-ingest. Read the affected pages and, when the issue is source-grounded,
 read the relevant source-summary pages and raw source text. Make the
 smallest defensible edit, preserve claim typing, update `updated:`,
-repair `sources:` / index / log entries if the edit changes them, and
-stop when the named issue is resolved. Use the `/wiki-repair` skill for
-this work. The human reviews and commits.
+repair `sources:` if needed, rebuild the index, append the log if the
+edit changes wiki state, and stop when the named issue is resolved. Use
+the `/wiki-repair` skill for this work. The human reviews and commits.
 
 ### Lint
 
@@ -352,6 +412,12 @@ The validator exits non-zero and reports findings by category; treat
 every finding as something to fix or justify, not noise.
 The scaffolded validator runs with Python's standard library; PDF ingest
 support remains the only packaged Python dependency.
+
+Run `python3 scripts/wiki-lint.py --briefing` when the user wants the
+session-start view: page counts, recent ingests and queries, open gaps,
+thinly sourced pages, stale hubs, missing extraction audits, hash drift,
+and handoff state. Briefing output is read-only; it does not replace the
+full lint pass.
 
 After the validator passes, handle the judgment-dependent checks it
 can't do: flag prose that looks like a factual or analytical claim but

@@ -29,6 +29,7 @@ Do not invoke for:
 ## Arguments
 
 - No positional arguments required
+- `--briefing` — print the deterministic session-start briefing and stop unless the user also asks for a full lint pass
 - `--apply` — after presenting findings and getting explicit approval, apply the approved fixes in the same session
 
 Do not combine discovery and apply without an intervening approval step unless the user explicitly asked for `--apply` *and* the fixes are mechanical and low-risk.
@@ -44,6 +45,15 @@ Do not combine discovery and apply without an intervening approval step unless t
 
 ### 2. Run deterministic validation first
 
+If the user asked for a briefing, run:
+
+```bash
+python3 scripts/wiki-lint.py --briefing
+```
+
+Return the output directly with any obvious caveats. It is read-only and
+is not a substitute for the full lint pass.
+
 Run:
 
 ```bash
@@ -51,6 +61,17 @@ python3 scripts/wiki-lint.py
 ```
 
 Treat this as the first gate. Group the findings by category. If the script reports structural errors, lead with those; downstream conceptual review matters less if the schema is already broken.
+
+If the only deterministic findings are index drift (missing entries,
+dead entries, source-count mismatches, or TLDR mismatches), the
+mechanical repair is:
+
+```bash
+python3 scripts/wiki-lint.py --rebuild-index
+```
+
+Run the normal lint command again afterward to confirm the rebuilt cache
+matches the current page frontmatter and TLDRs.
 
 ### 3. Do the judgment-dependent passes
 
@@ -64,6 +85,11 @@ After the deterministic pass, perform the checks `wiki-lint.py` cannot do alone:
   - hub pages (5+ backlinks) with stale `updated` dates
   - unanswered `[!gap]` callouts that should be promoted to `wiki/backlog.md` (recurring across pages, blocking downstream work, or central to `purpose.md`)
   - entity/concept pairs that co-occur in source-summary pages but are not cross-linked
+- **Dashboard freshness.** Report whether `wiki/dashboard.md` is older
+  than the latest log entry or the current surface pages
+  (`synthesis`, `backlog`, `debates`, `handoff`, `query-hub`). Use
+  `python3 scripts/wiki-lint.py --briefing` for the deterministic
+  freshness line, and surface stale dashboards as a maintenance finding.
 - **Backlog triage.** Read `wiki/backlog.md`. Flag rows with a `Review By` date in the past (overdue) and rows older than the `Review By` window without a status update. Surface, do not auto-resolve.
 - **Handoff currency.** If `wiki/handoff.md` was last updated more than two weeks ago, note it — the wiki has been worked on without anyone updating the cross-session state. Not an error; an observation.
 
@@ -92,7 +118,7 @@ Without approval:
 With approval or `--apply`:
 
 - Apply only the approved fixes.
-- Prefer mechanical, local fixes first: frontmatter corrections, link repairs, index updates, stale status flips with clear justification.
+- Prefer mechanical, local fixes first: frontmatter corrections, link repairs, index rebuilds, stale status flips with clear justification.
 - Route source-grounded attribution or scope repairs to `/wiki-repair` unless the user explicitly asked to apply them here.
 - Do not rewrite `purpose.md`, `writing-style.md`, or `raw/`.
 - If a fix turns into source refresh work, stop and route that item to `/wiki-ingest`.

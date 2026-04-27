@@ -21,7 +21,7 @@ tags: []
 | `source-summary` | `wiki/sources/` | One per ingested source | `raw_path` (string), `raw_hash` (SHA256) |
 | `comparison` | `wiki/comparisons/` | Head-to-head analysis of two or more entities/concepts | `subjects` (list of wikilinks) |
 | `synthesis` | `wiki/synthesis.md` (singleton) | Evolving thesis: the wiki's integrated understanding | — |
-| `meta` | `wiki/` and `wiki/docs/` | Infrastructure pages (handoff, backlog, decisions, this protocol, the index, the log, conventions) | — |
+| `meta` | `wiki/`, `wiki/docs/`, and `wiki/queries/` | Infrastructure pages (dashboard, debates, query hubs, handoff, backlog, decisions, this protocol, the index, the log, conventions) | — |
 
 `entity`, `concept`, `source-summary`, and `comparison` are *knowledge nodes* — they show up in the index, get indexed by source count, and participate in the orphan/dead-end checks. `synthesis` is the wiki's thesis page. `meta` pages are infrastructure, not knowledge — they are exempt from the index requirement and from the Title Case filename rule. They still get full frontmatter and TLDR validation.
 
@@ -64,7 +64,7 @@ The lint pass enforces these:
 
 1. **Wikilinks must resolve.** Every wikilink in a body must point at an existing page. Unresolved wikilinks are silent rot.
 2. **Provenance is consistent.** If a page body wikilinks a source-summary page, the page's frontmatter `sources:` list must include the same wikilink.
-3. **Index consistency.** Every knowledge node has an entry in `wiki/index.md`. Every index entry resolves to a page. Source counts in index entries match `len(sources)`. TLDRs in the index match the page's first `[!tldr]` line.
+3. **Index consistency.** Every knowledge node has an entry in `wiki/index.md`. The index is a derived cache rebuilt from page frontmatter and first `[!tldr]` lines with `python3 scripts/wiki-lint.py --rebuild-index`. Every index entry resolves to a page. Source counts in index entries match `len(sources)`. TLDRs in the index match the page's first `[!tldr]` line.
 4. **Hash integrity.** Each source-summary's `raw_hash` matches the SHA256 of the file at `raw_path`. Hash drift means the source has changed since ingest — re-extract or refresh.
 
 The lint pass *reports but does not fail* on these (judgment-dependent):
@@ -74,7 +74,7 @@ The lint pass *reports but does not fail* on these (judgment-dependent):
 
 ## Special Pages
 
-`wiki/index.md`, `wiki/log.md`, `wiki/conventions.md` are legacy plain-markdown infrastructure pages — they carry no frontmatter and are exempt from page-shape checks. Newer infrastructure pages (`handoff.md`, `backlog.md`, `decisions.md`, `wiki/docs/graph-protocol.md`) use `type: meta` with full frontmatter so they validate cleanly while staying out of the graph as knowledge nodes.
+`wiki/index.md`, `wiki/log.md`, `wiki/conventions.md` are legacy plain-markdown infrastructure pages — they carry no frontmatter and are exempt from page-shape checks. Newer infrastructure pages (`dashboard.md`, `debates.md`, `handoff.md`, `backlog.md`, `decisions.md`, `wiki/queries/query-hub.md`, `wiki/docs/graph-protocol.md`) use `type: meta` with full frontmatter so they validate cleanly while staying out of the graph as knowledge nodes.
 
 When in doubt, follow the newer pattern: give a new infrastructure page `type: meta` with frontmatter rather than adding it to the legacy SPECIAL_FILES list.
 
@@ -91,7 +91,7 @@ dependencies explain what to keep aligned and why it matters:
 | Entity and concept targets | Make sure entity and concept wikilinks resolve before dependent prose is finalized. | Concepts often name entities, and entities often cite concepts. The graph can be assembled in either direction, but the final links must point at real pages. |
 | Comparison subjects | Keep `subjects:` frontmatter and body references in sync with existing pages. | Comparisons are relationship nodes. If the declared subjects and prose disagree, queries cannot reliably find or interpret the comparison. |
 | Existing pages | Revisit overlapping pages after new targets exist. | A new source can change how an old page should link, cite, or qualify a claim; targeted updates keep prior knowledge integrated. |
-| Derived infrastructure | Refresh `wiki/index.md`, append `wiki/log.md`, revise `wiki/synthesis.md` when the source changes the thesis, and append `wiki/handoff.md` when follow-up state matters. | These files are the wiki's navigation, history, thesis, and session memory. If they describe a pre-ingest state, future queries and ingests start from stale context. |
+| Derived infrastructure | Rebuild `wiki/index.md`, append `wiki/log.md`, revise `wiki/synthesis.md` when the source changes the thesis, and append `wiki/handoff.md` when follow-up state matters. | These files are the wiki's navigation, history, thesis, and session memory. If they describe a pre-ingest state, future queries and ingests start from stale context. |
 
 ## Calibration Trail
 

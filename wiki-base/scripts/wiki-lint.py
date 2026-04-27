@@ -23,6 +23,8 @@ Checks implemented:
 
 Usage:
     python3 scripts/wiki-lint.py [--vault <dir>] [--category <name>]
+    python3 scripts/wiki-lint.py [--vault <dir>] --briefing
+    python3 scripts/wiki-lint.py [--vault <dir>] --rebuild-index
 
 Defaults to the current directory as the vault root.
 
@@ -86,6 +88,12 @@ AUDIT_CALLOUT_RE = re.compile(
     r"^\s*>\s*\[!gap\]\s+Extraction coverage of this ingest",
     re.IGNORECASE | re.MULTILINE,
 )
+INDEX_SECTIONS: tuple[tuple[str, str], ...] = (
+    ("Entities", "entity"),
+    ("Concepts", "concept"),
+    ("Sources", "source-summary"),
+    ("Comparisons", "comparison"),
+)
 
 
 @dataclass
@@ -130,6 +138,19 @@ class HealthSummary:
     pages_with_source_no_analysis: int
     stale_hubs: int
     source_summaries_missing_audit: int
+
+
+@dataclass
+class LogEntry:
+    date: str
+    operation: str
+    description: str
+
+
+@dataclass
+class DashboardFreshness:
+    status: str
+    detail: str
 
 
 # ---------- frontmatter + body parsing ----------
@@ -485,7 +506,11 @@ def extract_wikilink_targets(text: str) -> list[str]:
 
 
 def check_wikilink_resolution(vault: Vault) -> None:
-    known = set(vault.pages.keys())
+    known = set(vault.pages.keys()) | {
+        Path(name).stem
+        for name in SPECIAL_FILES
+        if (vault.root / "wiki" / name).is_file()
+    }
     for page in vault.pages.values():
         targets = extract_wikilink_targets(page.body)
         for target in targets:
@@ -524,6 +549,50 @@ def parse_index(index_path: Path) -> tuple[list[tuple[str, int, str, int]], list
     return entries, errors
 
 
+def pages_required_in_index(vault: Vault) -> dict[str, Page]:
+    """Return knowledge nodes that should appear in wiki/index.md."""
+
+    result: dict[str, Page] = {}
+    for stem, page in vault.pages.items():
+        fm = page.frontmatter
+        if fm is None:
+            continue
+        if fm.get("type") in ("synthesis", "meta"):
+            continue
+        result[stem] = page
+    return result
+
+
+def source_count(page: Page) -> int:
+    sources = page.frontmatter.get("sources") if page.frontmatter else None
+    return len(sources) if isinstance(sources, list) else 0
+
+
+def render_index(vault: Vault) -> str:
+    """Render wiki/index.md from page frontmatter and first TLDR lines."""
+
+    grouped: dict[str, list[Page]] = {typ: [] for _, typ in INDEX_SECTIONS}
+    for page in pages_required_in_index(vault).values():
+        typ = page.frontmatter.get("type") if page.frontmatter else None
+        if typ in grouped:
+            grouped[typ].append(page)
+
+    lines = ["# Wiki Index", ""]
+    for heading, typ in INDEX_SECTIONS:
+        lines.append(f"## {heading}")
+        entries = sorted(grouped[typ], key=lambda p: p.stem)
+        for page in entries:
+            tldr = page.tldr or ""
+            lines.append(f"- [[{page.stem}]] ({source_count(page)}) — {tldr}")
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def rebuild_index(vault: Vault) -> None:
+    index_path = vault.root / "wiki" / "index.md"
+    index_path.write_text(render_index(vault), encoding="utf-8")
+
+
 def check_index(vault: Vault) -> None:
     index_path = vault.root / "wiki" / "index.md"
     entries, errors = parse_index(index_path)
@@ -531,17 +600,7 @@ def check_index(vault: Vault) -> None:
         vault.add("index", index_path, err)
 
     indexed_stems = {e[0] for e in entries}
-    # synthesis.md and `type: meta` infrastructure pages may or may not appear
-    # in the index; we treat them as indexed-optional since the index template
-    # groups by Entities / Concepts / Sources / Comparisons (knowledge nodes).
-    page_stems_for_index: set[str] = set()
-    for stem, page in vault.pages.items():
-        fm = page.frontmatter
-        if fm is None:
-            continue
-        if fm.get("type") in ("synthesis", "meta"):
-            continue
-        page_stems_for_index.add(stem)
+    page_stems_for_index = set(pages_required_in_index(vault))
     page_stems = set(vault.pages.keys())
 
     missing_from_index = page_stems_for_index - indexed_stems
@@ -563,8 +622,7 @@ def check_index(vault: Vault) -> None:
         page = vault.pages.get(stem)
         if page is None:
             continue  # already reported
-        fm_sources = page.frontmatter.get("sources") if page.frontmatter else None
-        expected_count = len(fm_sources) if isinstance(fm_sources, list) else 0
+        expected_count = source_count(page)
         if count != expected_count:
             vault.add(
                 "index",
@@ -870,6 +928,250 @@ def render_health_summary(summary: HealthSummary) -> list[str]:
     ]
 
 
+LOG_ENTRY_RE = re.compile(
+    r"^###\s+\[(?P<date>\d{4}-\d{2}-\d{2})\]\s+"
+    r"(?P<operation>[^|]+)\|\s*(?P<description>.+?)\s*$"
+)
+
+
+def read_optional_text(path: Path) -> str:
+    try:
+        return path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return ""
+
+
+def parse_log_entries(root: Path) -> list[LogEntry]:
+    entries: list[LogEntry] = []
+    for line in read_optional_text(root / "wiki" / "log.md").splitlines():
+        match = LOG_ENTRY_RE.match(line.strip())
+        if match is None:
+            continue
+        entries.append(
+            LogEntry(
+                date=match.group("date"),
+                operation=match.group("operation").strip().lower(),
+                description=match.group("description").strip(),
+            )
+        )
+    return entries
+
+
+def recent_ingest_query_entries(root: Path, limit: int = 5) -> list[LogEntry]:
+    entries = [
+        entry
+        for entry in parse_log_entries(root)
+        if entry.operation in {"ingest", "query"}
+    ]
+    return entries[-limit:]
+
+
+def markdown_section(text: str, heading: str) -> list[str]:
+    target = f"## {heading}"
+    lines: list[str] = []
+    in_section = False
+    for line in text.splitlines():
+        if line.strip() == target:
+            in_section = True
+            continue
+        if in_section and line.startswith("## "):
+            break
+        if in_section:
+            lines.append(line)
+    return lines
+
+
+def open_backlog_rows(root: Path, limit: int = 5) -> list[str]:
+    rows: list[str] = []
+    for line in markdown_section(
+        read_optional_text(root / "wiki" / "backlog.md"), "Open"
+    ):
+        stripped = line.strip()
+        if not stripped.startswith("|") or stripped.startswith("|---"):
+            continue
+        if "Question or claim" in stripped:
+            continue
+        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        if len(cells) < 6:
+            continue
+        item_id, question, _surfaced, priority, review_by, status = cells[:6]
+        normalized_status = status.lower()
+        if normalized_status not in {"open", "in-progress"}:
+            continue
+        label = f"{item_id} {question}".strip()
+        rows.append(f"{label} ({priority}, review by {review_by}, {status})")
+    return rows[:limit]
+
+
+def handoff_state(root: Path, limit: int = 6) -> list[str]:
+    text = read_optional_text(root / "wiki" / "handoff.md")
+    if not text:
+        return []
+
+    items: list[str] = []
+    for heading in ("Last Session", "In Progress", "Blocked", "Open Questions"):
+        section_items: list[str] = []
+        for line in markdown_section(text, heading):
+            stripped = line.strip()
+            if not stripped or stripped.startswith("<!--"):
+                continue
+            if stripped.startswith("*No ") or stripped.startswith("*Nothing "):
+                continue
+            if stripped.startswith("```"):
+                continue
+            section_items.append(stripped)
+        if section_items:
+            summary = " ".join(section_items[:2])
+            if len(summary) > 180:
+                summary = summary[:177].rstrip() + "..."
+            items.append(f"{heading}: {summary}")
+    return items[:limit]
+
+
+def findings_from_check(vault: Vault, check: Callable[["Vault"], None]) -> list[Finding]:
+    scratch = Vault(root=vault.root, pages=vault.pages.copy())
+    check(scratch)
+    return scratch.findings
+
+
+def render_log_entries(entries: list[LogEntry]) -> list[str]:
+    if not entries:
+        return ["- recent ingests/queries: none"]
+    lines = ["- recent ingests/queries:"]
+    for entry in entries:
+        lines.append(
+            f"  - [{entry.date}] {entry.operation} | {entry.description}"
+        )
+    return lines
+
+
+def latest_log_date(root: Path) -> date | None:
+    dates = [parse_iso_date(entry.date) for entry in parse_log_entries(root)]
+    parsed_dates = [d for d in dates if d is not None]
+    return max(parsed_dates) if parsed_dates else None
+
+
+def page_updated_date(vault: Vault, stem: str) -> date | None:
+    page = vault.pages.get(stem)
+    if page is None or page.frontmatter is None:
+        return None
+    return parse_iso_date(page.frontmatter.get("updated"))
+
+
+def frontmatter_value(vault: Vault, stem: str, key: str) -> object | None:
+    page = vault.pages.get(stem)
+    if page is None or page.frontmatter is None:
+        return None
+    return page.frontmatter.get(key)
+
+
+def dashboard_freshness(vault: Vault) -> DashboardFreshness:
+    dashboard = vault.pages.get("dashboard")
+    if dashboard is None:
+        return DashboardFreshness("missing", "wiki/dashboard.md not found")
+
+    dashboard_date = page_updated_date(vault, "dashboard")
+    if dashboard_date is None:
+        if frontmatter_value(vault, "dashboard", "updated") == "{{date}}":
+            return DashboardFreshness(
+                "template",
+                "dashboard uses {{date}} placeholder; generated vaults "
+                "substitute this during scaffold creation",
+            )
+        return DashboardFreshness(
+            "unknown",
+            "dashboard `updated` is missing or not an ISO date",
+        )
+
+    checkpoints: list[tuple[str, date]] = []
+    log_date = latest_log_date(vault.root)
+    if log_date is not None:
+        checkpoints.append(("latest log", log_date))
+
+    for stem, label in (
+        ("synthesis", "synthesis"),
+        ("backlog", "backlog"),
+        ("debates", "debates"),
+        ("handoff", "handoff"),
+        ("query-hub", "query hub"),
+    ):
+        updated = page_updated_date(vault, stem)
+        if updated is not None:
+            checkpoints.append((label, updated))
+
+    newer = [
+        (label, updated)
+        for label, updated in checkpoints
+        if updated > dashboard_date
+    ]
+    if not newer:
+        return DashboardFreshness(
+            "current",
+            f"updated {dashboard_date.isoformat()}",
+        )
+
+    label, updated = max(newer, key=lambda item: item[1])
+    return DashboardFreshness(
+        "stale",
+        "updated "
+        f"{dashboard_date.isoformat()}; {label} is newer "
+        f"({updated.isoformat()})",
+    )
+
+
+def render_briefing(vault: Vault) -> list[str]:
+    summary = compute_health_summary(vault)
+    hash_findings = findings_from_check(vault, check_hash_drift)
+    backlog_rows = open_backlog_rows(vault.root)
+    handoff_items = handoff_state(vault.root)
+    freshness = dashboard_freshness(vault)
+
+    lines = [
+        "wiki-briefing:",
+        "- pages: "
+        f"{summary.total_pages} total "
+        f"({summary.by_type['source-summary']} sources, "
+        f"{summary.by_type['entity']} entities, "
+        f"{summary.by_type['concept']} concepts, "
+        f"{summary.by_type['comparison']} comparisons, "
+        f"{summary.by_type['synthesis']} synthesis, "
+        f"{summary.by_type['meta']} meta)",
+    ]
+    lines.extend(render_log_entries(recent_ingest_query_entries(vault.root)))
+    lines.extend(
+        [
+            f"- open gaps: {summary.pages_with_open_gaps}",
+            f"- thinly sourced pages: {summary.thinly_sourced_pages}",
+            f"- stale hub pages: {summary.stale_hubs}",
+            "- source summaries missing extraction audit callout: "
+            f"{summary.source_summaries_missing_audit}",
+            f"- hash drift findings: {len(hash_findings)}",
+            f"- dashboard freshness: {freshness.status} ({freshness.detail})",
+        ]
+    )
+
+    if backlog_rows:
+        lines.append("- backlog:")
+        for row in backlog_rows:
+            lines.append(f"  - {row}")
+    else:
+        lines.append("- backlog: no open rows")
+
+    if handoff_items:
+        lines.append("- handoff:")
+        for item in handoff_items:
+            lines.append(f"  - {item}")
+    else:
+        lines.append("- handoff: no active state")
+
+    if vault.findings:
+        lines.append(
+            f"- parse issues: {len(vault.findings)} "
+            "(run normal lint for details)"
+        )
+    return lines
+
+
 # ---------- entry point ----------
 
 
@@ -910,6 +1212,16 @@ def main(argv: list[str]) -> int:
         action="store_true",
         help="print only the health summary and skip validation checks",
     )
+    parser.add_argument(
+        "--briefing",
+        action="store_true",
+        help="print a compact session-start briefing and skip validation checks",
+    )
+    parser.add_argument(
+        "--rebuild-index",
+        action="store_true",
+        help="rewrite wiki/index.md from page frontmatter and TLDRs, then exit",
+    )
     args = parser.parse_args(argv)
 
     root = Path(args.vault).resolve()
@@ -919,6 +1231,28 @@ def main(argv: list[str]) -> int:
 
     vault = Vault(root=root)
     collect_pages(vault)
+
+    if args.briefing and args.rebuild_index:
+        print(
+            "error: --briefing and --rebuild-index cannot be combined",
+            file=sys.stderr,
+        )
+        return 2
+
+    if args.rebuild_index:
+        if vault.findings:
+            for f in vault.findings:
+                print(f.render(root), file=sys.stderr)
+            return 1
+        rebuild_index(vault)
+        count = len(pages_required_in_index(vault))
+        print(f"wiki-lint: rebuilt wiki/index.md ({count} entries)")
+        return 0
+
+    if args.briefing:
+        for line in render_briefing(vault):
+            print(line)
+        return 0
 
     if args.summary_only:
         for line in render_health_summary(compute_health_summary(vault)):

@@ -34,6 +34,7 @@ If the user's question is ambiguous about format, ask once; don't guess between 
 
 - Read `CLAUDE.md` at the vault root (frontmatter rules, claim typing, page naming, index format, writing style).
 - Read `wiki/conventions.md` (domain-specific conventions accumulated by this vault).
+- Read `wiki/dashboard.md` for the current human-facing entry points and priority gaps.
 - Read `wiki/handoff.md` to see what the last session was doing — it can change which pages count as "recent" or which gaps were already deferred.
 - Read `purpose.md`. If it is empty, note that — you have no research-direction steering and must rely on the question alone.
 - Read `wiki/index.md` in full. This is your map.
@@ -85,6 +86,7 @@ File as:
 - `wiki/comparisons/<Title>.md` — for comparisons, trade-off analyses, and cross-source syntheses.
 - `wiki/concepts/<Title>.md` — for new conceptual framings that emerge from the query.
 - `wiki/entities/<Title>.md` — only if the query surfaced a distinct entity not previously filed; usually not.
+- `wiki/queries/<Title>.md` — for durable recurring-question answers that synthesize existing pages but are not themselves knowledge nodes.
 
 When filing, use the appropriate template from `templates/`, fill required frontmatter (including `sources:` listing every source-summary you cited, per the Wiki Conventions), write a one-sentence TLDR, and preserve claim typing inside the page.
 
@@ -95,12 +97,15 @@ Do **not** file when:
 
 When in doubt, ask once: "File this as a comparison page?"
 
-### 6. Update the index, log, and — if affected — synthesis
+### 6. Rebuild the index, update the log, and — if affected — synthesis
 
 If you filed a page:
 
-- Add an entry to `wiki/index.md` under the correct category. Format: `- [[Page Name]] (N) — One-line TLDR.` where N is `len(sources)`.
+- Rebuild `wiki/index.md` with `python3 scripts/wiki-lint.py --rebuild-index` when the filed page is a knowledge node (`entity`, `concept`, `source-summary`, or `comparison`). The index is derived from frontmatter and TLDRs; do not hand-maintain entry ordering. Most `wiki/queries/` pages should be `type: meta`, so they do not require an index entry.
 - Append to `wiki/log.md`: `### [YYYY-MM-DD] query | <one-line description including the question framing>`
+- Update `wiki/queries/query-hub.md` when the filed page lives under `wiki/queries/`.
+- Update `wiki/dashboard.md` when the answer creates a new high-value route, changes recent activity, or promotes a priority gap.
+- Update `wiki/debates.md` when the answer surfaces a source disagreement or unresolved tension.
 - If the new page materially shifts the wiki's overall story, revise `wiki/synthesis.md` (targeted edit, not rewrite; keep it under ~1,000 words).
 
 If you did not file a page, still append a log entry when the query consumed meaningful read effort (≥5 pages touched). This lets lint's staleness checks see which corners of the wiki are being actively used.
@@ -121,7 +126,7 @@ For backlog promotions, you may add a row to `wiki/backlog.md` at the end of the
 ### 8. Present to the user
 
 - The answer itself (with citations), or the filed page path plus a link-form answer.
-- If a page was filed: path, TLDR, index entry added, log entry added.
+- If a page was filed: path, TLDR, index rebuild confirmed when applicable, query hub/dashboard/debates updates when applicable, log entry added.
 - Stale / gap observations (from step 7) as a short appended list.
 - A reminder to commit when ready. Do **not** auto-commit.
 

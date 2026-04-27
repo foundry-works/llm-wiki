@@ -51,10 +51,13 @@ if [[ ! -f "$ROOT/scripts/wiki-lint.py" ]]; then
   say_fail "vault" "missing scripts/wiki-lint.py under $ROOT"
 fi
 for state_file in \
+  "wiki/dashboard.md" \
+  "wiki/debates.md" \
   "wiki/handoff.md" \
   "wiki/backlog.md" \
   "wiki/decisions.md" \
-  "wiki/docs/graph-protocol.md"; do
+  "wiki/docs/graph-protocol.md" \
+  "wiki/queries/query-hub.md"; do
   if [[ ! -f "$ROOT/$state_file" ]]; then
     say_warn "state" "missing $state_file (run new-wiki.sh --into to scaffold)"
   fi
@@ -104,11 +107,11 @@ if command -v python3 >/dev/null 2>&1; then
   rm -f "$LINT_OUTPUT"
 
   HEALTH_OUTPUT="$(mktemp)"
-  if python3 "$ROOT/scripts/wiki-lint.py" --vault "$ROOT" --summary-only >"$HEALTH_OUTPUT" 2>&1; then
-    say_ok "health" "$(head -n 1 "$HEALTH_OUTPUT")"
+  if python3 "$ROOT/scripts/wiki-lint.py" --vault "$ROOT" --briefing >"$HEALTH_OUTPUT" 2>&1; then
+    say_ok "briefing" "$(head -n 1 "$HEALTH_OUTPUT")"
     sed -n '2,$p' "$HEALTH_OUTPUT" | sed 's/^/     /'
   else
-    say_warn "health" "could not compute wiki health summary"
+    say_warn "briefing" "could not compute wiki briefing"
   fi
   rm -f "$HEALTH_OUTPUT"
 

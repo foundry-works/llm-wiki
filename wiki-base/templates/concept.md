@@ -10,6 +10,13 @@ tags: []
 > [!tldr]
 > One-sentence summary of this concept.
 
+## At a Glance
+
+- **Source posture:** How many sources define or use the concept; note if definitions disagree.
+- **Why it matters:** The practical implication for the wiki's purpose.
+- **Key gaps:** The most important missing evidence or unresolved boundary.
+- **Dive deeper:** Links to related concepts, entities, comparisons, or source summaries.
+
 ## Definition
 
 > [!source] Core definition

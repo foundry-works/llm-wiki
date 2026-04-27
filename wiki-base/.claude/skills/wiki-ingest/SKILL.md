@@ -38,7 +38,7 @@ Status:
 - **match** — source unchanged since last ingest; skip extract, run audit against existing pages.
 - **drift** — source has changed since last ingest; stop and ask the human whether to refresh affected pages or treat as a new source. Never silently overwrite.
 
-**precheck** — Read `CLAUDE.md`, `purpose.md`, `wiki/handoff.md`, and the source end to end. If `purpose.md` is empty (placeholder only), note that — the extractor won't get research-direction steering. The handoff tells you what the last session was working on; it can change which overlaps matter. Search `wiki/` for entities and concepts that overlap (`obsidian search query="..." path=wiki` preferred; `grep -ri "..." wiki/` fallback). Present to the human, before any page writes:
+**precheck** — Read `CLAUDE.md`, `purpose.md`, `wiki/dashboard.md`, `wiki/handoff.md`, and the source end to end. If `purpose.md` is empty (placeholder only), note that — the extractor won't get research-direction steering. The dashboard and handoff tell you what the current entry points and active state are; they can change which overlaps matter. Search `wiki/` for entities and concepts that overlap (`obsidian search query="..." path=wiki` preferred; `grep -ri "..." wiki/` fallback). Present to the human, before any page writes:
 
 1. **Citation** — author(s), year, title, venue.
 2. **Key takeaways** — 4-8 substantive claims you'd extract.
@@ -48,7 +48,7 @@ Status:
 
 End with "Proceed?". Skip in batch mode (when the user has said "skip the pre-check from now on" or similar).
 
-**extract** (subagent: `wiki-extractor`) — Invoke with `source_md_path`, `raw_path`, `raw_hash`, `today_iso`, `purpose_md` contents, and the approved plan (the pre-check structure, condensed). Wait for the structured report: `pages_created`, `pages_updated`, `index_entries_added`, `log_entry`, `synthesis_changed`, `surprises`, `unresolved_during_extraction`.
+**extract** (subagent: `wiki-extractor`) — Invoke with `source_md_path`, `raw_path`, `raw_hash`, `today_iso`, `purpose_md` contents, and the approved plan (the pre-check structure, condensed). Wait for the structured report: `pages_created`, `pages_updated`, `index_rebuilt`, `log_entry`, `synthesis_changed`, `surprises`, `unresolved_during_extraction`.
 
 **audit** (subagent: `wiki-auditor`) — Invoke **independently**. Pass no extractor reasoning. The auditor reads the source fresh against the pages; that independence is the point.
 
@@ -107,7 +107,8 @@ Pass that list as `pages_created` to the auditor, `pages_updated` = `[]`. The au
 A summary to the user:
 
 - Source path and `raw_hash`.
-- (Full ingest) Pages created, pages updated, index/log/synthesis updates confirmed.
+- (Full ingest) Pages created, pages updated, index rebuild/log/synthesis updates confirmed.
+- (Full ingest) Surface artifacts updated when relevant: `wiki/dashboard.md` for recent activity or priority routes, `wiki/debates.md` for disagreements, and `wiki/backlog.md` for gaps that deserve session-level triage.
 - (Audit-only) Number of linked pages audited; whether this superseded a prior audit.
 - Auditor's gap report inline, so the human can triage in place.
 - (Full ingest) Extractor `surprises` and `unresolved_during_extraction` highlighted separately.

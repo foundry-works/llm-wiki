@@ -1,6 +1,6 @@
 ---
 name: wiki-extractor
-description: Extracts knowledge from a single source into wiki pages following the schema in CLAUDE.md. Given a source path, raw_hash, and an approved extraction plan, writes the source-summary, entity, concept, and (when warranted) comparison pages, then updates index, log, and synthesis. Does not perform the pre-check or the post-extraction audit — those are the orchestrator's job. Receives plan as input; returns a structured report of pages written.
+description: Extracts knowledge from a single source into wiki pages following the schema in CLAUDE.md. Given a source path, raw_hash, and an approved extraction plan, writes the source-summary, entity, concept, and (when warranted) comparison pages, then rebuilds the index and updates log and synthesis. Does not perform the pre-check or the post-extraction audit — those are the orchestrator's job. Receives plan as input; returns a structured report of pages written.
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -36,9 +36,10 @@ The orchestrator passes you a JSON-ish brief with:
    3. Concept pages — the entities they reference now exist.
    4. Comparison pages (if any) — they reference both entities and concepts, so they go last among content pages.
    5. Update existing pages flagged in the plan — these may gain wikilinks to pages you just created, which now resolve.
-   6. Update `wiki/index.md` — add entries for new pages. One-line TLDRs and source counts; preserve existing alphabetical ordering within each category.
-   7. Append a single entry to `wiki/log.md` summarizing the ingest.
-   8. Update `wiki/synthesis.md` last — synthesis reads the current state of the wiki, so it has to wait until every other write has landed. Revise to reflect the new source's claims; keep under ~1,000 words; mark as `updated: <today_iso>`.
+   6. Rebuild `wiki/index.md` with `python3 scripts/wiki-lint.py --rebuild-index`. The index is derived from frontmatter and TLDRs; do not hand-maintain entry ordering.
+   7. Update surface pages when relevant: `wiki/dashboard.md` for recent activity or new reading routes, `wiki/debates.md` for disagreements, and `wiki/backlog.md` for gaps that deserve session-level triage.
+   8. Append a single entry to `wiki/log.md` summarizing the ingest.
+   9. Update `wiki/synthesis.md` last — synthesis reads the current state of the wiki, so it has to wait until every other write has landed. Revise to reflect the new source's claims; keep under ~1,000 words; mark as `updated: <today_iso>`.
 
 5. **Honor every Specifications-section rule in CLAUDE.md.** In particular:
    - Frontmatter on every wiki page (core fields plus per-type fields, ISO 8601 dates, lists where required)
@@ -59,7 +60,8 @@ A structured report (markdown is fine) with:
 
 - `pages_created`: list of `{path, type, title}`
 - `pages_updated`: list of `{path, what_changed}`
-- `index_entries_added`: count
+- `index_rebuilt`: true/false
+- `surface_updates`: list of `{path, what_changed}`
 - `log_entry`: the line you appended
 - `synthesis_changed`: true/false with one-sentence summary of revision
 - `surprises`: anything that diverged from the plan (existing pages found that the plan missed; in-source claims that contradicted other in-source claims and were noted with both as `[!source]` plus a `[!analysis]` reconciliation; etc.)
