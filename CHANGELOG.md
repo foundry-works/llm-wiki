@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-04-27 — Revision 15
+
+Progressive-disclosure layer for mature wikis. The base scaffold now has a human-facing dashboard, contradiction surface, durable query hub, deterministic briefing output, and a README shaped around quick adoption.
+
+### Added
+
+- **`wiki/dashboard.md`.** Session-start front door for the wiki: current synthesis route, recent activity, priority gaps, debates, stale/thin areas, key hubs, and deeper maps. Scaffolded as `type: meta` and date-substituted on new wiki creation. (`wiki-base/wiki/dashboard.md`, `scripts/new-wiki.sh`, `tests/test_smoke.py`)
+- **`wiki/debates.md`.** Surface for source disagreements, contradictions, and unresolved tensions that should not be buried page-by-page. Keeps "sources disagree" separate from "the wiki has a gap." (`wiki-base/wiki/debates.md`, `wiki-base/CLAUDE.md`)
+- **`wiki/queries/query-hub.md`.** Durable home for recurring query answers that synthesize multiple pages but are not better modeled as entity, concept, source, or comparison nodes. Named `query-hub.md` rather than `README.md` to avoid Obsidian filename collisions with future directory README pages. (`wiki-base/wiki/queries/query-hub.md`, `wiki-base/.claude/skills/wiki-query/SKILL.md`)
+- **`python3 scripts/wiki-lint.py --briefing`.** Read-only session-start summary covering page counts, recent ingests/queries, open gaps, thin pages, stale hubs, source summaries missing extraction audits, hash drift, dashboard freshness, backlog rows, and handoff state. (`wiki-base/scripts/wiki-lint.py`, `tests/test_lint_fixtures.py`, `wiki-base/scripts/wiki-doctor.sh`)
+- **Generated index rebuild support.** `wiki/index.md` is now explicitly treated as a derived cache rendered from page frontmatter and first TLDR lines. Rebuild with `python3 scripts/wiki-lint.py --rebuild-index`. (`wiki-base/scripts/wiki-lint.py`, `wiki-base/CLAUDE.md`, `wiki-base/.claude/skills/*`)
+- **Page-level "At a Glance" sections.** Entity, concept, source-summary, and comparison templates now start with compact source posture, gaps, and deeper-reading cues before the deep claim body. (`wiki-base/templates/*.md`)
+- **Focused linter fixture tests.** Added defect-fixture unit tests for frontmatter, TLDRs, filenames, wikilinks, index drift, source invariants, aliases, hash drift, bare claims, index rebuilds, and briefing output. (`tests/test_lint_fixtures.py`)
+
+### Changed
+
+- **README rewritten around adoption.** Opens with a sharper tagline, moves Quick Start near the top, adds a "Why Not RAG?" comparison, command reference, "What You Get" table, reading path, trust model, and validation summary. (`README.md`)
+- **Progressive-disclosure guidance added to the schema.** `CLAUDE.md` now defines surface/skim/read/dive layers and ownership rules for generated, agent-maintained, human-owned, and raw-grounded files. (`wiki-base/CLAUDE.md`)
+- **Skills maintain surface artifacts.** Ingest, query, lint, repair, and extractor guidance now mention dashboard/debates/query hub updates where relevant while keeping updates scoped and auditable. (`wiki-base/.claude/skills/`, `wiki-base/.claude/agents/wiki-extractor.md`)
+- **Doctor reports briefing output.** `wiki-doctor.sh` now runs `--briefing` instead of only `--summary-only`, so generated wikis show the session-start health surface during first-run checks. (`wiki-base/scripts/wiki-doctor.sh`)
+- **Graph protocol documents the new meta surfaces.** Dashboard, debates, and query hub are documented as infrastructure pages, not knowledge nodes. (`wiki-base/wiki/docs/graph-protocol.md`)
+
+### Removed
+
+- **Implementation plan from the repo root.** `plan.md` was used to drive the progressive-disclosure work and removed after the implementation landed in code, scaffold, docs, and tests. (`plan.md`)
+
 ## 2026-04-26 — Revision 14
 
 State-tracking layer lifted from real-world wikis. Two specialized vaults (Investments, SupplementsResearch) independently invented session continuity, prioritized backlog, structural decisions log, and a calibration trail for analyses. Promoting these patterns into the base scaffold so every new wiki gets them by default.
